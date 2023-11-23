@@ -2,16 +2,12 @@
 <Configuration>
     <Appenders>
         <console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%style{[%d{h:mm:ss a}]}{blue} %highlight{(%-5level@ %logger{36})}{cyan} %msg%n"/>
+            <PatternLayout pattern="%style{[%d{h:mm:ss a}]}{blue} %highlight{(%logger @ %level)} %msg%n"/>
         </console>
         <RollingFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout pattern="[%d{h:mm:ss a}] (%-5level @ %t) (%logger{36}) %msg%n"/>
             <OnStartupTriggeringPolicy />
         </RollingFile>
-        <File name="debugFile" fileName="logs/debug.log">
-            <ThresholdFilter level="debug"/>
-            <PatternLayout pattern="[%d{h:mm:ss a}] (%-5level @ %t) (%logger{36}) %msg%n"/>
-        </File>
     </Appenders>
     <Loggers>
         <Root level="info">

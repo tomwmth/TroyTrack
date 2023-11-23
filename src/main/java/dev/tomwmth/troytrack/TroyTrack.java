@@ -58,10 +58,10 @@ public class TroyTrack {
 
     public void sendTrackingMessage(MessageEmbed embed) {
         Config.Settings settings = Config.getSettings();
-        if (settings.trackingGuildId > 0L && settings.trackingChannelId > 0L) {
-            Guild trackingGuild = this.jda.getGuildById(settings.trackingGuildId);
+        if (settings.getTrackingGuildId() > 0L && settings.getTrackingChannelId() > 0L) {
+            Guild trackingGuild = this.jda.getGuildById(settings.getTrackingGuildId());
             if (trackingGuild != null) {
-                GuildChannel trackingChannel = trackingGuild.getGuildChannelById(settings.trackingChannelId);
+                GuildChannel trackingChannel = trackingGuild.getGuildChannelById(settings.getTrackingChannelId());
                 if (trackingChannel instanceof GuildMessageChannel channel) {
                     channel.sendMessageEmbeds(embed).queue();
                 }

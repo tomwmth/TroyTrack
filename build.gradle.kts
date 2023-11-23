@@ -4,7 +4,6 @@ import java.util.Date
 
 plugins {
     id("java")
-    id("application")
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -17,13 +16,19 @@ repositories {
 }
 
 dependencies {
-    shade(this, "net.dv8tion:JDA:5.0.0-beta.18")
-    shade(this, "dev.tomwmth:viego:1.0.0")
-    shade(this, "com.squareup.moshi:moshi:1.15.0")
-    shade(this, "com.google.guava:guava:32.1.3-jre")
-    shade(this, "it.unimi.dsi:fastutil:8.5.12")
-    shade(this, "org.apache.logging.log4j:log4j-slf4j2-impl:2.22.0")
-    
+    implementation("net.dv8tion:JDA:5.0.0-beta.18") {
+        exclude("org.slf4j")
+    }
+    implementation("dev.tomwmth:viego:1.0.2") {
+        exclude("org.slf4j")
+    }
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.guava:guava:32.1.3-jre")
+    implementation("it.unimi.dsi:fastutil:8.5.12")
+
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.22.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.22.0")
+
     val lombok = "org.projectlombok:lombok:1.18.30"
     compileOnly(lombok)
     annotationProcessor(lombok)
@@ -33,14 +38,6 @@ configurations {
     configureEach {
         exclude("club.minnced")
     }
-}
-
-tasks.withType<JavaExec> {
-    mainClass = "dev.tomwmth.troytrack.Runner"
-
-    val run = File("run/");
-    run.mkdirs();
-    workingDir = run
 }
 
 tasks.withType<Jar> {
@@ -57,26 +54,19 @@ tasks.withType<Jar> {
 }
 
 tasks.withType<ShadowJar> {
-    dependsOn("jar")
-    outputs.upToDateWhen { false }
+    mergeServiceFiles()
 
-    minimize {
-        exclude("**/module-info.class")
-        exclude("**/**.kotlin_module")
-        exclude("META-INF/maven/")
-        exclude("META-INF/proguard/")
-    }
+    exclude("META-INF/maven/")
+    exclude("META-INF/proguard/")
+    exclude("**/**.kotlin_module")
+    exclude("**/package-info.class")
+    exclude("**/module-info.class")
+}
 
-    // Add shaded dependencies
-    configurations.clear()
-    configurations.add(project.configurations.getByName("shadow"))
+tasks.build {
+    dependsOn("shadowJar")
 }
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-}
-
-fun shade(scope: DependencyHandlerScope, dependency: String) {
-    scope.implementation(dependency)
-    scope.shadow(dependency)
 }

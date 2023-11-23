@@ -1,16 +1,28 @@
 package dev.tomwmth.troytrack;
 
-import com.squareup.moshi.Moshi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dev.tomwmth.troytrack.riot.RiotId;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Thomas Wearmouth <tomwmth@pm.me>
  * Created on 15/09/2023
  */
 public class Reference {
-    public static final Logger LOGGER = LoggerFactory.getLogger(TroyTrack.class.getSimpleName());
+    public static final Logger LOGGER = LogManager.getLogger(TroyTrack.class.getSimpleName());
 
-    public static final Moshi MOSHI = new Moshi.Builder()
-            .build();
+    public static final Gson GSON = gson()
+            .create();
+
+    public static final Gson GSON_PRETTY = gson()
+            .setPrettyPrinting()
+            .create();
+
+    private static GsonBuilder gson() {
+        return new GsonBuilder()
+                .disableHtmlEscaping()
+                .registerTypeAdapter(RiotId.class, new RiotId.Adapter());
+    }
 }

@@ -1,10 +1,10 @@
 package dev.tomwmth.troytrack.util;
 
-import com.hawolt.data.api.RankedDivision;
-import com.hawolt.data.api.RankedTier;
-import com.hawolt.data.routing.Platform;
-import com.hawolt.dto.league.v4.LeagueEntryDTO;
 import dev.tomwmth.troytrack.util.enums.RankIcon;
+import dev.tomwmth.viego.lol.league.v4.obj.LeagueEntry;
+import dev.tomwmth.viego.lol.league.v4.obj.RankedDivision;
+import dev.tomwmth.viego.lol.league.v4.obj.RankedTier;
+import dev.tomwmth.viego.routing.Platform;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public final class LeagueUtils {
     }
 
     @NotNull
-    public static String calculateLeaguePointChange(@NotNull LeagueEntryDTO before, @NotNull LeagueEntryDTO after) {
+    public static String calculateLeaguePointChange(@NotNull LeagueEntry before, @NotNull LeagueEntry after) {
         if (before.getTier() != after.getTier()) {
             if (before.getTier().ordinal() < after.getTier().ordinal())
                 return "PROMOTED!";
@@ -37,7 +37,7 @@ public final class LeagueUtils {
         }
         else {
             String str = "";
-            int lpChange = after.getLeaguePoints() - before.getLeaguePoints();
+            int lpChange = after.getPoints() - before.getPoints();
             if (lpChange >= 0)
                 str += "+";
             else
@@ -49,10 +49,10 @@ public final class LeagueUtils {
     }
 
     @NotNull
-    public static String getRankString(@NotNull LeagueEntryDTO leagueEntry) {
+    public static String getRankString(@NotNull LeagueEntry leagueEntry) {
         RankedTier tier = leagueEntry.getTier();
         RankedDivision division = leagueEntry.getDivision();
-        int lp = leagueEntry.getLeaguePoints();
+        int lp = leagueEntry.getPoints();
 
         StringBuilder sb = new StringBuilder();
         sb.append(convertToTitleCase(tier.name())).append(" ");
@@ -63,10 +63,10 @@ public final class LeagueUtils {
     }
 
     @NotNull
-    public static String getAbbreviatedRankString(@NotNull LeagueEntryDTO leagueEntry) {
+    public static String getAbbreviatedRankString(@NotNull LeagueEntry leagueEntry) {
         RankedTier tier = leagueEntry.getTier();
         RankedDivision division = leagueEntry.getDivision();
-        int lp = leagueEntry.getLeaguePoints();
+        int lp = leagueEntry.getPoints();
 
         StringBuilder sb = new StringBuilder();
         sb.append(RankIcon.valueOf(tier).getEmoji()).append(" ");

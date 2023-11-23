@@ -1,8 +1,7 @@
 package dev.tomwmth.troytrack.riot.score;
 
-import com.hawolt.dto.match.v5.match.MatchDto;
-import com.hawolt.dto.match.v5.match.ParticipantDto;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import dev.tomwmth.viego.lol.match.v5.obj.Match;
+import dev.tomwmth.viego.lol.match.v5.obj.Participant;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,9 +25,9 @@ public class PiggyScoreV2 extends ScoreProvider {
     private int championHealthTotal = 0;
     private int objectiveDamageTotal = 0;
 
-    public PiggyScoreV2(@NotNull MatchDto match) {
+    public PiggyScoreV2(@NotNull Match match) {
         super(match);
-        for (ParticipantDto participant : this.participants) {
+        for (Participant participant : this.participants) {
             int championHealth = this.getTotalHealthToChampions(participant);
             this.championHealthTotal += championHealth;
             int objectiveDamage = this.getTotalDamageDealtToObjectives(participant);
@@ -37,7 +36,7 @@ public class PiggyScoreV2 extends ScoreProvider {
     }
 
     @Override
-    public int calculateScore(@NotNull ParticipantDto participant) {
+    public int calculateScore(@NotNull Participant participant) {
         int teamId = participant.getTeamId();
         float individualChampionHealth = this.getTotalHealthToChampions(participant);
         float individualObjectiveDamage = this.getTotalDamageDealtToObjectives(participant);
@@ -69,13 +68,13 @@ public class PiggyScoreV2 extends ScoreProvider {
         );
     }
 
-    private int getTotalHealthToChampions(@NotNull ParticipantDto participant) {
+    private int getTotalHealthToChampions(@NotNull Participant participant) {
         return participant.getTotalDamageDealtToChampions() +
                 Math.round(participant.getTotalHealsOnTeammates() * HEAL_MULTIPLIER) +
                 Math.round(participant.getTotalDamageShieldedOnTeammates() * SHIELD_MULTIPLIER);
     }
 
-    private int getTotalDamageDealtToObjectives(@NotNull ParticipantDto participant) {
+    private int getTotalDamageDealtToObjectives(@NotNull Participant participant) {
         return Math.round(participant.getDamageDealtToObjectives() * EPIC_MONSTER_MULTIPLIER) +
                 participant.getDamageDealtToTurrets() +
                 participant.getDamageDealtToBuildings();

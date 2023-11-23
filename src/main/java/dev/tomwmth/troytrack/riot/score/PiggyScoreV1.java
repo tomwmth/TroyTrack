@@ -1,7 +1,7 @@
 package dev.tomwmth.troytrack.riot.score;
 
-import com.hawolt.dto.match.v5.match.MatchDto;
-import com.hawolt.dto.match.v5.match.ParticipantDto;
+import dev.tomwmth.viego.lol.match.v5.obj.Match;
+import dev.tomwmth.viego.lol.match.v5.obj.Participant;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,9 +25,9 @@ public class PiggyScoreV1 extends ScoreProvider {
     private final Int2IntOpenHashMap championHealthMap = new Int2IntOpenHashMap();
     private final Int2IntOpenHashMap objectiveDamageMap = new Int2IntOpenHashMap();
 
-    public PiggyScoreV1(@NotNull MatchDto match) {
+    public PiggyScoreV1(@NotNull Match match) {
         super(match);
-        for (ParticipantDto participant : this.participants) {
+        for (Participant participant : this.participants) {
             int teamId = participant.getTeamId();
             int championHealth = this.getTotalHealthToChampions(participant);
             this.championHealthMap.addTo(teamId, championHealth);
@@ -37,7 +37,7 @@ public class PiggyScoreV1 extends ScoreProvider {
     }
 
     @Override
-    public int calculateScore(@NotNull ParticipantDto participant) {
+    public int calculateScore(@NotNull Participant participant) {
         int teamId = participant.getTeamId();
         float totalChampionHealth = this.championHealthMap.get(teamId);
         float totalObjectiveDamage = this.objectiveDamageMap.get(teamId);
@@ -71,13 +71,13 @@ public class PiggyScoreV1 extends ScoreProvider {
         );
     }
 
-    private int getTotalHealthToChampions(@NotNull ParticipantDto participant) {
+    private int getTotalHealthToChampions(@NotNull Participant participant) {
         return participant.getTotalDamageDealtToChampions() +
                 Math.round(participant.getTotalHealsOnTeammates() * HEAL_MULTIPLIER) +
                 Math.round(participant.getTotalDamageShieldedOnTeammates() * SHIELD_MULTIPLIER);
     }
 
-    private int getTotalDamageDealtToObjectives(@NotNull ParticipantDto participant) {
+    private int getTotalDamageDealtToObjectives(@NotNull Participant participant) {
         return participant.getDamageDealtToObjectives() +
                 participant.getDamageDealtToTurrets() +
                 participant.getDamageDealtToBuildings();

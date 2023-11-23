@@ -1,10 +1,5 @@
 package dev.tomwmth.troytrack.riot;
 
-import com.hawolt.data.api.RankedQueue;
-import com.hawolt.dto.league.v4.LeagueEntryDTO;
-import com.hawolt.dto.match.v5.match.MatchDto;
-import com.hawolt.dto.match.v5.match.ParticipantDto;
-import com.hawolt.dto.summoner.v4.SummonerDto;
 import dev.tomwmth.troytrack.Reference;
 import dev.tomwmth.troytrack.TroyTrack;
 import dev.tomwmth.troytrack.riot.score.PiggyScoreV2;
@@ -12,16 +7,24 @@ import dev.tomwmth.troytrack.riot.score.ScoreProvider;
 import dev.tomwmth.troytrack.util.CollectionUtils;
 import dev.tomwmth.troytrack.util.EmbedUtils;
 import dev.tomwmth.troytrack.util.LeagueUtils;
+import dev.tomwmth.viego.lol.league.v4.obj.LeagueEntry;
+import dev.tomwmth.viego.lol.match.v5.obj.Match;
+import dev.tomwmth.viego.lol.match.v5.obj.Participant;
+import dev.tomwmth.viego.lol.shared.RankedQueue;
+import dev.tomwmth.viego.lol.summoner.v4.obj.Summoner;
+import dev.tomwmth.viego.riot.account.v1.obj.RiotAccount;
+import dev.tomwmth.viego.routing.Platform;
 import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Thomas Wearmouth <tomwmth@pm.me>
  * Created on 15/09/2023
  */
-public class SummonerTracker {
+public class AccountTracker {
     private static final String GAME_INFO_PATH = "https://www.leagueofgraphs.com/match/oce/%s#participant%d";
     private static final String[] THUMBNAIL_WON = {
             "https://media.tenor.com/flGNpobJuuoAAAAi/happy-clap.gif",
@@ -46,56 +49,82 @@ public class SummonerTracker {
     private final RiotApi api;
 
     @Getter @NotNull
-    private final String summonerName;
+    private final RiotId riotId;
 
     @NotNull
-    private LeagueEntryDTO latestEntry;
+    private final Platform platform;
 
-    @NotNull
-    private MatchDto latestMatch;
+    @Nullable
+    private LeagueEntry latestEntry;
 
-    public SummonerTracker(@NotNull RiotApi api, @NotNull String summonerName) throws Exception {
+    @Nullable
+    private Match latestMatch;
+
+    public AccountTracker(@NotNull RiotApi api, @NotNull RiotId riotId, @NotNull Platform platform) throws Exception {
         this.api = api;
-        this.summonerName = summonerName;
+        this.riotId = riotId;
+        this.platform = platform;
 
-        SummonerDto summoner = this.api.getSummonerByName(this.summonerName);
+
+        RiotAccount account = this.api.getRiotAccountById(this.riotId);
+        Summoner summoner = this.api.getSummonerByRiotAccount(account);
         this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
-        this.latestMatch = this.api.getLatestMatch(summoner);
+        this.latestMatch = this.api.getLatestMatch(account, platform);
     }
 
     public void heartbeat() throws Exception {
-        SummonerDto summoner = this.api.getSummonerByName(this.summonerName);
-        MatchDto otherMatch = this.api.getLatestMatch(summoner);
-        if (!otherMatch.getMetadataDto().getMatchId().equals(this.latestMatch.getMetadataDto().getMatchId())) {
+        String message = null;
+        boolean broken = false;
+
+        RiotAccount account = this.api.getRiotAccountById(this.riotId);
+        Summoner summoner = this.api.getSummonerByRiotAccount(account);
+        Match otherMatch = this.api.getLatestMatch(account, this.platform);
+
+        if (this.latestEntry == null) {
+            broken = true;
+            this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
+            message = "latest entry was null, attempted fix";
+        }
+
+        if (this.latestMatch == null) {
+            broken = true;
+            this.latestMatch = this.api.getLatestMatch(account, platform);
+            message = "latest match was null, attempted fix";
+        }
+
+        if (!broken && otherMatch != null
+                && !otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
             this.processNewMatch(summoner, otherMatch);
-            Reference.LOGGER.info("Heartbeat for \"{}\" completed: found new match", this.summonerName);
+            message = "found new match";
         }
-        else {
-            Reference.LOGGER.info("Heartbeat for \"{}\" completed: no new match", this.summonerName);
+        else if (message == null) {
+            message = "no new match";
         }
+
+        Reference.LOGGER.info("Heartbeat for \"{}\" completed: {}", this.riotId, message);
     }
 
-    private void processNewMatch(SummonerDto summoner, MatchDto newMatch) throws Exception {
-        LeagueEntryDTO newEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
-        boolean remake = (newMatch.getInfoDto().getGameDuration() / 60.0F) < 5;
+    private void processNewMatch(Summoner summoner, Match newMatch) {
+        LeagueEntry newEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
+        boolean remake = (newMatch.getInfo().getDuration() / 60.0F) < 5;
         if (!remake) {
-            boolean won = newMatch.isVictorious(summoner);
-            String matchId = newMatch.getMetadataDto().getMatchId();
+            Participant tracked = newMatch.getParticipant(summoner.getPuuid());
+
+            boolean won = tracked.isWin();
+            String matchId = newMatch.getMetadata().getId();
             String thumbnail = won ? CollectionUtils.pickRandom(THUMBNAIL_WON) : CollectionUtils.pickRandom(THUMBNAIL_LOST);
-            String title = TITLE_TEMPLATE.formatted(summoner.getName(), (won ? "won" : "lost"), (won ? "!" : "."));
+            String title = TITLE_TEMPLATE.formatted(riotId.toString(), (won ? "won" : "lost"), (won ? "!" : "."));
             String previousRankString = LeagueUtils.getAbbreviatedRankString(this.latestEntry);
             String newRankString = LeagueUtils.getAbbreviatedRankString(newEntry);
             String lpChange = LeagueUtils.calculateLeaguePointChange(this.latestEntry, newEntry);
             String changeDescription = CHANGE_DESCRIPTION_TEMPLATE.formatted(previousRankString, newRankString);
             String footer = FOOTER_TEMPLATE.formatted(matchId);
 
-            ParticipantDto tracked = newMatch.getParticipantData(summoner.getPUUID());
-
             ScoreProvider scoreProvider = new PiggyScoreV2(newMatch);
             int trackedScore = 0;
             int teamTotal = 0;
-            for (ParticipantDto participant : newMatch.getInfoDto().getParticipants()) {
-                if (tracked.getSummonerId().equals(participant.getSummonerId())) {
+            for (Participant participant : newMatch.getInfo().getParticipants()) {
+                if (tracked.getPuuid().equals(participant.getPuuid())) {
                     trackedScore = scoreProvider.calculateScore(participant);
                 }
                 else if (tracked.getTeamId() == participant.getTeamId()) {
@@ -104,7 +133,7 @@ public class SummonerTracker {
             }
             int teamAverage = teamTotal / 4;
 
-            String link = GAME_INFO_PATH.formatted(matchId.replace("OC1_", ""), tracked.getParticipantId());
+            String link = GAME_INFO_PATH.formatted(matchId.replace("OC1_", ""), tracked.getId());
             String description = DESCRIPTION_TEMPLATE.formatted(link, scoreProvider.generateVerdict(trackedScore, teamAverage));
 
             MessageEmbed eb = new EmbedBuilder()

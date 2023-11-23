@@ -23,7 +23,7 @@ public class CommandConfig extends Command {
 
     @SlashCommand
     public void execute(@NotNull SlashCommandInteractionEvent event) {
-        if (event.getUser().getIdLong() == Config.getSettings().adminUserId) {
+        if (event.getUser().getIdLong() == Config.getSettings().getAdminUserId()) {
             long start = System.currentTimeMillis();
             Config.getInstance().load();
             long elapsed = System.currentTimeMillis() - start;

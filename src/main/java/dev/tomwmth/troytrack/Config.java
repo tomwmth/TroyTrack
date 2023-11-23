@@ -1,10 +1,13 @@
 package dev.tomwmth.troytrack;
 
-import com.squareup.moshi.JsonAdapter;
+import dev.tomwmth.troytrack.riot.RiotId;
+import dev.tomwmth.viego.routing.Platform;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -13,7 +16,6 @@ import java.util.List;
  */
 public class Config {
     private static final Config INSTANCE = new Config(new File("config.json"));
-    private static final JsonAdapter<Settings> SETTINGS_ADAPTER = Reference.MOSHI.adapter(Settings.class).nonNull();
 
     private transient final File configFile;
 
@@ -30,9 +32,8 @@ public class Config {
             this.save();
             return;
         }
-        try {
-            String json = Files.readString(this.configFile.toPath());
-            this.settings = SETTINGS_ADAPTER.fromJson(json);
+        try (BufferedReader reader = new BufferedReader(new FileReader(this.configFile))) {
+            this.settings = Reference.GSON.fromJson(reader, Settings.class);
         }
         catch (Exception ex) {
             Reference.LOGGER.error("Unable to read config file", ex);
@@ -43,8 +44,7 @@ public class Config {
 
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.configFile))) {
-            String json = SETTINGS_ADAPTER.toJson(this.settings);
-            writer.write(json);
+            Reference.GSON_PRETTY.toJson(this.settings, writer);
         }
         catch (Exception ex) {
             Reference.LOGGER.error("Unable to write config file", ex);
@@ -61,23 +61,22 @@ public class Config {
         return INSTANCE.settings;
     }
 
+    @Getter @Setter
     public static final class Settings {
-        public long adminUserId = 137143359050350592L;
+        private long adminUserId = 137143359050350592L;
 
-        public long trackingGuildId = 0L;
+        private long trackingGuildId = 0L;
 
-        public long trackingChannelId = 0L;
+        private long trackingChannelId = 0L;
 
-        public List<RiotId> trackedSummoners = List.of(new RiotId("Hason", "OCE"));
+        private List<TrackedAccount> trackedAccounts = List.of(
+                new TrackedAccount(RiotId.parse("Hason#OCE"), Platform.OC1)
+        );
 
-        public static final class RiotId {
-            public String gameName;
-            public String tagLine;
-
-            public RiotId(String gameName, String tagLine) {
-                this.gameName = gameName;
-                this.tagLine = tagLine;
-            }
+        @Getter @AllArgsConstructor
+        public static final class TrackedAccount {
+            private final RiotId riotId;
+            private final Platform platform;
         }
     }
 }

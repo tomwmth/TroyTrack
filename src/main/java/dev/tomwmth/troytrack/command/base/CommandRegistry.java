@@ -4,7 +4,6 @@ import dev.tomwmth.troytrack.Reference;
 import dev.tomwmth.troytrack.command.base.annotation.*;
 import dev.tomwmth.troytrack.command.base.argument.*;
 import dev.tomwmth.troytrack.util.CollectionUtils;
-import dev.tomwmth.troytrack.command.base.annotation.Optional;
 import dev.tomwmth.troytrack.util.object.Pair;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
@@ -166,7 +165,7 @@ public class CommandRegistry {
                 var type = parameter.getType();
                 var name = (option.name().isEmpty() ? parameter.getName() : option.name()).toLowerCase();
                 var description = option.desc().isEmpty() ? "No description set" : option.desc();
-                var required = !parameter.isAnnotationPresent(Optional.class) && option.required();
+                var required = option.required();
 
                 if (OPTION_TYPES.containsKey(type)) {
                     var optionType = OPTION_TYPES.get(type);
@@ -281,17 +280,19 @@ public class CommandRegistry {
 
             // Add non-existent commands
             for (var command : this.commands) {
-                var commandData = command.getCommandData();
-                if (commands.stream().noneMatch(cmd -> cmd.getName().equalsIgnoreCase(commandData.getName()) && cmd.getType() == commandData.getType())) {
-                    changed = true;
-                    break;
-                }
-
-                // Check context commands
-                for (var context : command.getContextCommands()) {
-                    if (commands.stream().noneMatch(cmd -> cmd.getName().equals(context.getName()) && cmd.getType() == context.getType())) {
+                if (command.isGuildOnly()) {
+                    var commandData = command.getCommandData();
+                    if (commands.stream().noneMatch(cmd -> cmd.getName().equalsIgnoreCase(commandData.getName()) && cmd.getType() == commandData.getType())) {
                         changed = true;
                         break;
+                    }
+
+                    // Check context commands
+                    for (var context : command.getContextCommands()) {
+                        if (commands.stream().noneMatch(cmd -> cmd.getName().equals(context.getName()) && cmd.getType() == context.getType())) {
+                            changed = true;
+                            break;
+                        }
                     }
                 }
             }
