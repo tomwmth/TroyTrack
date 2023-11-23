@@ -1,9 +1,10 @@
 package dev.tomwmth.troytrack;
 
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.JsonAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class Config {
     private static final Config INSTANCE = new Config(new File("config.json"));
+    private static final JsonAdapter<Settings> SETTINGS_ADAPTER = Reference.MOSHI.adapter(Settings.class).nonNull();
 
     private transient final File configFile;
 
@@ -28,8 +30,9 @@ public class Config {
             this.save();
             return;
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(this.configFile))) {
-            this.settings = Reference.GSON.fromJson(reader, Settings.class);
+        try {
+            String json = Files.readString(this.configFile.toPath());
+            this.settings = SETTINGS_ADAPTER.fromJson(json);
         }
         catch (Exception ex) {
             Reference.LOGGER.error("Unable to read config file", ex);
@@ -40,7 +43,8 @@ public class Config {
 
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.configFile))) {
-            Reference.GSON_PRETTY.toJson(this.settings, writer);
+            String json = SETTINGS_ADAPTER.toJson(this.settings);
+            writer.write(json);
         }
         catch (Exception ex) {
             Reference.LOGGER.error("Unable to write config file", ex);
@@ -58,16 +62,22 @@ public class Config {
     }
 
     public static final class Settings {
-        @SerializedName("admin_user_id")
         public long adminUserId = 137143359050350592L;
 
-        @SerializedName("tracking_guild_id")
         public long trackingGuildId = 0L;
 
-        @SerializedName("tracking_channel_id")
         public long trackingChannelId = 0L;
 
-        @SerializedName("tracked_summoners")
-        public List<String> trackedSummoners = List.of("Hason");
+        public List<RiotId> trackedSummoners = List.of(new RiotId("Hason", "OCE"));
+
+        public static final class RiotId {
+            public String gameName;
+            public String tagLine;
+
+            public RiotId(String gameName, String tagLine) {
+                this.gameName = gameName;
+                this.tagLine = tagLine;
+            }
+        }
     }
 }
