@@ -13,18 +13,18 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io")
+    maven("https://lib.alpn.cloud/alpine-public")
 }
 
 dependencies {
-    shade(this, "net.dv8tion:JDA:5.0.0-beta.13")
-    shade(this, "com.github.tomwmth:Javan:1f7e406")
-    shade(this, "com.google.code.gson:gson:2.10.1")
-    shade(this, "com.google.guava:guava:32.1.2-jre")
+    shade(this, "net.dv8tion:JDA:5.0.0-beta.18")
+    shade(this, "dev.tomwmth:viego:1.0.0")
+    shade(this, "com.squareup.moshi:moshi:1.15.0")
+    shade(this, "com.google.guava:guava:32.1.3-jre")
     shade(this, "it.unimi.dsi:fastutil:8.5.12")
-    shade(this, "org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
-
-    val lombok = "org.projectlombok:lombok:1.18.28"
+    shade(this, "org.apache.logging.log4j:log4j-slf4j2-impl:2.22.0")
+    
+    val lombok = "org.projectlombok:lombok:1.18.30"
     compileOnly(lombok)
     annotationProcessor(lombok)
 }
