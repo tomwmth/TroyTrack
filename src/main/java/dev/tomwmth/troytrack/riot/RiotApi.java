@@ -6,12 +6,12 @@ import com.google.common.cache.LoadingCache;
 import dev.tomwmth.troytrack.Config;
 import dev.tomwmth.troytrack.Reference;
 import dev.tomwmth.viego.Viego;
+import dev.tomwmth.viego.lol.constants.GameQueue;
+import dev.tomwmth.viego.lol.constants.RankedQueue;
 import dev.tomwmth.viego.lol.league.v4.LeagueV4;
 import dev.tomwmth.viego.lol.league.v4.obj.LeagueEntry;
 import dev.tomwmth.viego.lol.match.v5.MatchV5;
 import dev.tomwmth.viego.lol.match.v5.obj.Match;
-import dev.tomwmth.viego.lol.match.v5.obj.Queue;
-import dev.tomwmth.viego.lol.shared.RankedQueue;
 import dev.tomwmth.viego.lol.summoner.v4.SummonerV4;
 import dev.tomwmth.viego.lol.summoner.v4.obj.Summoner;
 import dev.tomwmth.viego.riot.account.v1.AccountV1;
@@ -42,7 +42,7 @@ public class RiotApi {
 
     private static final MatchV5.Query LAST_MATCH_QUERY = new MatchV5.Query()
             .withMaxCount(1)
-            .withQueue(Queue.SR_5x5_RANKED_SOLO);
+            .withQueue(GameQueue.SR_5x5_RANKED_SOLO);
 
     private final LoadingCache<RiotId, RiotAccount> riotAccountCache = CacheBuilder.newBuilder()
             .maximumSize(20)

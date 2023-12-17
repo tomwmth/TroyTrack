@@ -1,6 +1,6 @@
 package dev.tomwmth.troytrack.util.enums;
 
-import dev.tomwmth.viego.lol.league.v4.obj.RankedTier;
+import dev.tomwmth.viego.lol.constants.RankedTier;
 import lombok.Getter;
 
 /**
