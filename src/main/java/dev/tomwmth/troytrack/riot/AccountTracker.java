@@ -6,7 +6,6 @@ import dev.tomwmth.troytrack.obj.CachedGuildChannel;
 import dev.tomwmth.troytrack.obj.TrackedAccount;
 import dev.tomwmth.troytrack.riot.score.PiggyScoreV2;
 import dev.tomwmth.troytrack.riot.score.ScoreProvider;
-import dev.tomwmth.troytrack.util.CollectionUtils;
 import dev.tomwmth.troytrack.util.EmbedUtils;
 import dev.tomwmth.troytrack.util.LeagueUtils;
 import dev.tomwmth.viego.lol.constants.RankedQueue;
@@ -85,8 +84,6 @@ public class AccountTracker {
             this.latestMatch = this.api.getLatestMatch(account, this.trackedAccount.getPlatform());
             message = "latest match was null, attempted fix";
         }
-
-        this.processNewMatch(summoner, this.latestMatch);
 
         if (!broken && otherMatch != null
                 && !otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
