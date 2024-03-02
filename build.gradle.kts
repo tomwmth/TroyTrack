@@ -16,18 +16,18 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:5.0.0-beta.18") {
+    implementation("net.dv8tion:JDA:5.0.0-beta.20") {
         exclude("org.slf4j")
     }
-    implementation("dev.tomwmth:viego:1.0.3") {
+    implementation("dev.tomwmth:viego:1.0.4") {
         exclude("org.slf4j")
     }
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.google.guava:guava:32.1.3-jre")
-    implementation("it.unimi.dsi:fastutil:8.5.12")
+    implementation("com.google.guava:guava:33.0.0-jre")
+    implementation("it.unimi.dsi:fastutil:8.5.13")
 
-    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.22.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.22.0")
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.23.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.23.0")
 
     val lombok = "org.projectlombok:lombok:1.18.30"
     compileOnly(lombok)
