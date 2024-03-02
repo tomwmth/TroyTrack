@@ -21,12 +21,16 @@ public abstract class ScoreProvider {
 
     public abstract int calculateScore(@NotNull Participant participant);
 
-    protected float calculateKDA(@NotNull Participant participant) {
+    public float calculateKDA(@NotNull Participant participant) {
         return (participant.getKills() + participant.getAssists()) / (float) participant.getDeaths();
     }
 
-    protected float calculateCSPM(@NotNull Participant participant) {
+    public float calculateCSPM(@NotNull Participant participant) {
         float gameMinutes = this.match.getInfo().getDuration() / 60.0F;
-        return participant.getTotalMinionsKilled() + participant.getNeutralMinionsKilled() / gameMinutes;
+        return calculateCS(participant) / gameMinutes;
+    }
+
+    public int calculateCS(@NotNull Participant participant) {
+        return participant.getTotalMinionsKilled() + participant.getNeutralMinionsKilled();
     }
 }

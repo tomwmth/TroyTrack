@@ -31,20 +31,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public class AccountTracker {
     private static final String GAME_INFO_PATH = "https://www.leagueofgraphs.com/match/oce/%s#participant%d";
-    private static final String[] THUMBNAIL_WON = {
-            "https://media.tenor.com/flGNpobJuuoAAAAi/happy-clap.gif",
-            "https://media.tenor.com/XggXN7Y2G7YAAAAi/poggies-poggieshands.gif",
-            "https://media.tenor.com/9phgfRuGM8UAAAAi/marcelomunareto5.gif",
-            "https://media.tenor.com/9HiFghlR4WAAAAAi/clapping-drake.gif"
-    };
-    private static final String[] THUMBNAIL_LOST = {
-            "https://media.tenor.com/VB1JaUzZqIsAAAAi/sadge-cry-sadge.gif",
-            "https://media.tenor.com/iCLR19N5OsMAAAAi/nooo.gif",
-            "https://media.tenor.com/iaz00NplM0QAAAAi/icant.gif",
-            "https://media.tenor.com/IaSQ2CvyEAoAAAAi/pepepoint-pepe.gif"
-    };
+    private static final String CHAMP_ICON_PATH = "https://cdn.communitydragon.org/latest/champion/%d/square";
     private static final String TITLE_TEMPLATE = "%s %s a match%s";
-    private static final String DESCRIPTION_TEMPLATE = "You can view the full game recap [here](%s).";
+    private static final String DESCRIPTION_TEMPLATE = """
+            ● **%d**/**%d**/**%d** (%.2f KDA)
+            ● **%d** (%.1f per min)
+
+            You can view the full game recap [here](%s).
+            """;
     private static final String CHANGE_DESCRIPTION_TEMPLATE = "%s ➜ %s";
     private static final String SCORE_TITLE_TEMPLATE = "%d PS";
     private static final String SCORE_DESCRIPTION_TEMPLATE = "Team averaged %d PS ➜ (Δ%s)";
@@ -92,6 +86,8 @@ public class AccountTracker {
             message = "latest match was null, attempted fix";
         }
 
+        this.processNewMatch(summoner, this.latestMatch);
+
         if (!broken && otherMatch != null
                 && !otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
             this.processNewMatch(summoner, otherMatch);
@@ -112,7 +108,7 @@ public class AccountTracker {
 
             boolean won = tracked.isWin();
             String matchId = newMatch.getMetadata().getId().split("_")[1];
-            String thumbnail = won ? CollectionUtils.pickRandom(THUMBNAIL_WON) : CollectionUtils.pickRandom(THUMBNAIL_LOST);
+            String thumbnail = CHAMP_ICON_PATH.formatted(tracked.getChampionId());
             String title = TITLE_TEMPLATE.formatted(this.trackedAccount.getRiotId().toString(), (won ? "won" : "lost"), (won ? "!" : "."));
             String previousRankString = LeagueUtils.getAbbreviatedRankString(this.latestEntry);
             String newRankString = LeagueUtils.getAbbreviatedRankString(newEntry);
@@ -137,7 +133,11 @@ public class AccountTracker {
             String scoreDescription = SCORE_DESCRIPTION_TEMPLATE.formatted(teamAverage, this.calculateDelta(trackedScore, teamAverage));
 
             String link = GAME_INFO_PATH.formatted(matchId, tracked.getId());
-            String description = DESCRIPTION_TEMPLATE.formatted(link);
+            String description = DESCRIPTION_TEMPLATE.formatted(
+                    tracked.getKills(), tracked.getDeaths(), tracked.getAssists(), scoreProvider.calculateKDA(tracked),
+                    scoreProvider.calculateCS(tracked), scoreProvider.calculateCSPM(tracked),
+                    link
+            );
 
             MessageEmbed eb = new EmbedBuilder()
                     .setTitle(title)
