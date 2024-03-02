@@ -34,7 +34,7 @@ public class AccountTracker {
     private static final String TITLE_TEMPLATE = "%s %s a match%s";
     private static final String DESCRIPTION_TEMPLATE = """
             ● **%d**/**%d**/**%d** (%.2f KDA)
-            ● **%d** (%.1f per min)
+            ● **%d CS** (%.1f per min)
 
             You can view the full game recap [here](%s).
             """;
