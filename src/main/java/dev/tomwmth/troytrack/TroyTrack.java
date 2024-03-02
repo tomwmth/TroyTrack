@@ -9,10 +9,6 @@ import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,19 +50,6 @@ public class TroyTrack {
         this.riotApi = new RiotApi();
 
         instance = this;
-    }
-
-    public void sendTrackingMessage(MessageEmbed embed) {
-        Config.Settings settings = Config.getSettings();
-        if (settings.getTrackingGuildId() > 0L && settings.getTrackingChannelId() > 0L) {
-            Guild trackingGuild = this.jda.getGuildById(settings.getTrackingGuildId());
-            if (trackingGuild != null) {
-                GuildChannel trackingChannel = trackingGuild.getGuildChannelById(settings.getTrackingChannelId());
-                if (trackingChannel instanceof GuildMessageChannel channel) {
-                    channel.sendMessageEmbeds(embed).queue();
-                }
-            }
-        }
     }
 
     private void registerListeners() {

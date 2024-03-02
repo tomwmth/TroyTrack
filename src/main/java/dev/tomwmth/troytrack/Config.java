@@ -1,8 +1,9 @@
 package dev.tomwmth.troytrack;
 
+import dev.tomwmth.troytrack.obj.CachedGuildChannel;
+import dev.tomwmth.troytrack.obj.TrackedAccount;
 import dev.tomwmth.troytrack.riot.RiotId;
 import dev.tomwmth.viego.routing.Platform;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -65,18 +66,12 @@ public class Config {
     public static final class Settings {
         private long adminUserId = 137143359050350592L;
 
-        private long trackingGuildId = 0L;
-
-        private long trackingChannelId = 0L;
-
         private List<TrackedAccount> trackedAccounts = List.of(
-                new TrackedAccount(RiotId.parse("Hason#OCE"), Platform.OC1)
+                new TrackedAccount(
+                        RiotId.parse("Hason#OCE"),
+                        Platform.OC1,
+                        List.of(CachedGuildChannel.of(-1L, -1L))
+                )
         );
-
-        @Getter @AllArgsConstructor
-        public static final class TrackedAccount {
-            private final RiotId riotId;
-            private final Platform platform;
-        }
     }
 }

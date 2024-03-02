@@ -2,6 +2,8 @@ package dev.tomwmth.troytrack.riot;
 
 import dev.tomwmth.troytrack.Reference;
 import dev.tomwmth.troytrack.TroyTrack;
+import dev.tomwmth.troytrack.obj.CachedGuildChannel;
+import dev.tomwmth.troytrack.obj.TrackedAccount;
 import dev.tomwmth.troytrack.riot.score.PiggyScoreV2;
 import dev.tomwmth.troytrack.riot.score.ScoreProvider;
 import dev.tomwmth.troytrack.util.CollectionUtils;
@@ -13,10 +15,13 @@ import dev.tomwmth.viego.lol.match.v5.obj.Match;
 import dev.tomwmth.viego.lol.match.v5.obj.Participant;
 import dev.tomwmth.viego.lol.summoner.v4.obj.Summoner;
 import dev.tomwmth.viego.riot.account.v1.obj.RiotAccount;
-import dev.tomwmth.viego.routing.Platform;
 import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,10 +54,7 @@ public class AccountTracker {
     private final RiotApi api;
 
     @Getter @NotNull
-    private final RiotId riotId;
-
-    @NotNull
-    private final Platform platform;
+    private final TrackedAccount trackedAccount;
 
     @Nullable
     private LeagueEntry latestEntry;
@@ -60,25 +62,23 @@ public class AccountTracker {
     @Nullable
     private Match latestMatch;
 
-    public AccountTracker(@NotNull RiotApi api, @NotNull RiotId riotId, @NotNull Platform platform) throws Exception {
+    public AccountTracker(@NotNull RiotApi api, @NotNull TrackedAccount trackedAccount) throws Exception {
         this.api = api;
-        this.riotId = riotId;
-        this.platform = platform;
+        this.trackedAccount = trackedAccount;
 
-
-        RiotAccount account = this.api.getRiotAccountById(this.riotId);
+        RiotAccount account = this.api.getRiotAccountById(this.trackedAccount.getRiotId());
         Summoner summoner = this.api.getSummonerByRiotAccount(account);
         this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
-        this.latestMatch = this.api.getLatestMatch(account, platform);
+        this.latestMatch = this.api.getLatestMatch(account, this.trackedAccount.getPlatform());
     }
 
     public void heartbeat() throws Exception {
         String message = null;
         boolean broken = false;
 
-        RiotAccount account = this.api.getRiotAccountById(this.riotId);
+        RiotAccount account = this.api.getRiotAccountById(this.trackedAccount.getRiotId());
         Summoner summoner = this.api.getSummonerByRiotAccount(account);
-        Match otherMatch = this.api.getLatestMatch(account, this.platform);
+        Match otherMatch = this.api.getLatestMatch(account, this.trackedAccount.getPlatform());
 
         if (this.latestEntry == null) {
             broken = true;
@@ -88,7 +88,7 @@ public class AccountTracker {
 
         if (this.latestMatch == null) {
             broken = true;
-            this.latestMatch = this.api.getLatestMatch(account, platform);
+            this.latestMatch = this.api.getLatestMatch(account, this.trackedAccount.getPlatform());
             message = "latest match was null, attempted fix";
         }
 
@@ -101,7 +101,7 @@ public class AccountTracker {
             message = "no new match";
         }
 
-        Reference.LOGGER.info("Heartbeat for \"{}\" completed: {}", this.riotId, message);
+        Reference.LOGGER.info("Heartbeat for \"{}\" completed: {}", this.trackedAccount.getRiotId(), message);
     }
 
     private void processNewMatch(Summoner summoner, Match newMatch) {
@@ -111,9 +111,9 @@ public class AccountTracker {
             Participant tracked = newMatch.getParticipant(summoner.getPuuid());
 
             boolean won = tracked.isWin();
-            String matchId = newMatch.getMetadata().getId();
+            String matchId = newMatch.getMetadata().getId().split("_")[1];
             String thumbnail = won ? CollectionUtils.pickRandom(THUMBNAIL_WON) : CollectionUtils.pickRandom(THUMBNAIL_LOST);
-            String title = TITLE_TEMPLATE.formatted(riotId.toString(), (won ? "won" : "lost"), (won ? "!" : "."));
+            String title = TITLE_TEMPLATE.formatted(this.trackedAccount.getRiotId().toString(), (won ? "won" : "lost"), (won ? "!" : "."));
             String previousRankString = LeagueUtils.getAbbreviatedRankString(this.latestEntry);
             String newRankString = LeagueUtils.getAbbreviatedRankString(newEntry);
             String lpChange = LeagueUtils.calculateLeaguePointChange(this.latestEntry, newEntry);
@@ -133,7 +133,7 @@ public class AccountTracker {
             }
             int teamAverage = teamTotal / 4;
 
-            String link = GAME_INFO_PATH.formatted(matchId.replace("OC1_", ""), tracked.getId());
+            String link = GAME_INFO_PATH.formatted(matchId, tracked.getId());
             String description = DESCRIPTION_TEMPLATE.formatted(link, scoreProvider.generateVerdict(trackedScore, teamAverage));
 
             MessageEmbed eb = new EmbedBuilder()
@@ -146,7 +146,7 @@ public class AccountTracker {
                     .setFooter(footer)
                     .setColor(won ? EmbedUtils.SUCCESS_COLOR : EmbedUtils.ERROR_COLOR)
                     .build();
-            TroyTrack.getInstance().sendTrackingMessage(eb);
+            this.sendMessage(eb);
         }
         else {
             Reference.LOGGER.info("Detected match was a remake, ignoring...");
@@ -154,5 +154,20 @@ public class AccountTracker {
 
         this.latestEntry = newEntry;
         this.latestMatch = newMatch;
+    }
+
+    private void sendMessage(@NotNull MessageEmbed embed) {
+        JDA jda = TroyTrack.getInstance().getJda();
+        for (CachedGuildChannel ids : this.trackedAccount.getChannels()) {
+            if (ids.getGuildId() > 0L && ids.getChannelId() > 0L) {
+                Guild trackingGuild = jda.getGuildById(ids.getGuildId());
+                if (trackingGuild != null) {
+                    GuildChannel trackingChannel = trackingGuild.getGuildChannelById(ids.getChannelId());
+                    if (trackingChannel instanceof GuildMessageChannel channel) {
+                        channel.sendMessageEmbeds(embed).queue();
+                    }
+                }
+            }
+        }
     }
 }

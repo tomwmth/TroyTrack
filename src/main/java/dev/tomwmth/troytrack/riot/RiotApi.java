@@ -74,14 +74,14 @@ public class RiotApi {
         for (int i = 0; i < trackedAccounts.size(); i++) {
             var trackedAccount = trackedAccounts.get(i);
             try {
-                AccountTracker tracker = new AccountTracker(this, trackedAccount.getRiotId(), trackedAccount.getPlatform());
+                AccountTracker tracker = new AccountTracker(this, trackedAccount);
                 this.accountTrackers.add(tracker);
                 this.trackerExecutor.scheduleWithFixedDelay(() -> {
                     try {
                         tracker.heartbeat();
                     }
                     catch (Exception ex) {
-                        Reference.LOGGER.error("Error executing tracker heartbeat for summoner \"{}\"", tracker.getRiotId(), ex);
+                        Reference.LOGGER.error("Error executing tracker heartbeat for summoner \"{}\"", tracker.getTrackedAccount().getRiotId(), ex);
                     }
                 }, 500L * i, 20_000L, TimeUnit.MILLISECONDS);
             }
