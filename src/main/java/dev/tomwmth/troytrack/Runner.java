@@ -34,6 +34,13 @@ public class Runner {
         thread.setDaemon(true);
         thread.start();
 
+        try {
+            thread.join();
+        }
+        catch (InterruptedException ex) {
+            Reference.LOGGER.error("Initialization thread was interrupted", ex);
+        }
+
         new Thread(() -> {
             var scanner = new Scanner(System.in);
             while (true) {
