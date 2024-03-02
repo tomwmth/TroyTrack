@@ -44,7 +44,7 @@ public class TroyTrack {
         this.jda = JDABuilder
                 .createDefault(System.getProperty("discord.token"))
                 .disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOJI, CacheFlag.STICKER, CacheFlag.SCHEDULED_EVENTS)
-                .setActivity(Activity.watching("Hason's games"))
+                .setActivity(Activity.watching("your games"))
                 .build();
 
         this.registerListeners();
