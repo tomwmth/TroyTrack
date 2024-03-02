@@ -44,10 +44,10 @@ public class AccountTracker {
             "https://media.tenor.com/IaSQ2CvyEAoAAAAi/pepepoint-pepe.gif"
     };
     private static final String TITLE_TEMPLATE = "%s %s a match%s";
-    private static final String DESCRIPTION_TEMPLATE = "You can view the full game recap [here](%s).\n" +
-            "\n" +
-            "%s";
+    private static final String DESCRIPTION_TEMPLATE = "You can view the full game recap [here](%s).";
     private static final String CHANGE_DESCRIPTION_TEMPLATE = "%s ➜ %s";
+    private static final String SCORE_TITLE_TEMPLATE = "%d PS";
+    private static final String SCORE_DESCRIPTION_TEMPLATE = "Team averaged %d PS ➜ (Δ%s)";
     private static final String FOOTER_TEMPLATE = "Match ID: %s";
 
     @NotNull
@@ -133,14 +133,16 @@ public class AccountTracker {
             }
             int teamAverage = teamTotal / 4;
 
+            String scoreTitle = SCORE_TITLE_TEMPLATE.formatted(trackedScore);
+            String scoreDescription = SCORE_DESCRIPTION_TEMPLATE.formatted(teamAverage, this.calculateDelta(trackedScore, teamAverage));
+
             String link = GAME_INFO_PATH.formatted(matchId, tracked.getId());
-            String description = DESCRIPTION_TEMPLATE.formatted(link, scoreProvider.generateVerdict(trackedScore, teamAverage));
+            String description = DESCRIPTION_TEMPLATE.formatted(link);
 
             MessageEmbed eb = new EmbedBuilder()
                     .setTitle(title)
                     .addField(lpChange, changeDescription, false)
-                    .addField("Individual Score", trackedScore + " PS", true)
-                    .addField("Team Score", teamAverage + " PS", true)
+                    .addField(scoreTitle, scoreDescription, false)
                     .setDescription(description)
                     .setThumbnail(thumbnail)
                     .setFooter(footer)
@@ -169,5 +171,12 @@ public class AccountTracker {
                 }
             }
         }
+    }
+
+    private @NotNull String calculateDelta(int individualScore, int teamAverageScore) {
+        int delta = individualScore - teamAverageScore;
+        boolean positive = delta >= 0;
+        delta = Math.abs(delta);
+        return (positive ? "+" : "-") + delta;
     }
 }

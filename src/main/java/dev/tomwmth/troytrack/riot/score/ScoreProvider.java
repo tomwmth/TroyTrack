@@ -21,8 +21,6 @@ public abstract class ScoreProvider {
 
     public abstract int calculateScore(@NotNull Participant participant);
 
-    public abstract String generateVerdict(int individualScore, int teamAverageScore);
-
     protected float calculateKDA(@NotNull Participant participant) {
         return (participant.getKills() + participant.getAssists()) / (float) participant.getDeaths();
     }

@@ -56,18 +56,6 @@ public class PiggyScoreV2 extends ScoreProvider {
         return this.clamp(score);
     }
 
-    @Override
-    public String generateVerdict(int individualScore, int teamAverageScore) {
-        int delta = individualScore - teamAverageScore;
-        boolean positive = delta >= 0;
-        delta = Math.abs(delta);
-        return "With a delta of %s, it is %s likely you are %s".formatted(
-                (positive ? "+" : "-") + delta,
-                (delta >= 10 ? "highly" : "moderately"),
-                (positive ? "the goat. \uD83D\uDC10" : "a piggy. \uD83D\uDC37")
-        );
-    }
-
     private int getTotalHealthToChampions(@NotNull Participant participant) {
         return participant.getTotalDamageDealtToChampions() +
                 Math.round(participant.getTotalHealsOnTeammates() * HEAL_MULTIPLIER) +
