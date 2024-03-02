@@ -37,9 +37,6 @@ import java.util.concurrent.TimeUnit;
  * Created on 10/09/2023
  */
 public class RiotApi {
-    public static final Region REGION = Region.SEA;
-    public static final Platform PLATFORM = Platform.OC1;
-
     private static final MatchV5.Query LAST_MATCH_QUERY = new MatchV5.Query()
             .withMaxCount(1)
             .withQueue(GameQueue.SR_5x5_RANKED_SOLO);
