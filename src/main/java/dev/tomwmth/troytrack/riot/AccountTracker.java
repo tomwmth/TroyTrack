@@ -8,6 +8,7 @@ import dev.tomwmth.troytrack.riot.score.PiggyScoreV2;
 import dev.tomwmth.troytrack.riot.score.ScoreProvider;
 import dev.tomwmth.troytrack.util.EmbedUtils;
 import dev.tomwmth.troytrack.util.LeagueUtils;
+import dev.tomwmth.troytrack.util.enums.RankIcon;
 import dev.tomwmth.viego.lol.constants.RankedQueue;
 import dev.tomwmth.viego.lol.league.v4.obj.LeagueEntry;
 import dev.tomwmth.viego.lol.match.v5.obj.Match;
@@ -67,28 +68,25 @@ public class AccountTracker {
 
     public void heartbeat() throws Exception {
         String message = null;
-        boolean broken = false;
-
         RiotAccount account = this.api.getRiotAccountById(this.trackedAccount.getRiotId());
         Summoner summoner = this.api.getSummonerByRiotAccount(account);
         Match otherMatch = this.api.getLatestMatch(account, this.trackedAccount.getPlatform());
 
         if (this.latestEntry == null) {
-            broken = true;
             this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
             message = "latest entry was null, attempted fix";
         }
 
         if (this.latestMatch == null) {
-            broken = true;
             this.latestMatch = this.api.getLatestMatch(account, this.trackedAccount.getPlatform());
             message = "latest match was null, attempted fix";
         }
 
-        if (!broken && otherMatch != null
-                && !otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
-            this.processNewMatch(summoner, otherMatch);
-            message = "found new match";
+        if (otherMatch != null) {
+            if (this.latestMatch == null || otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
+                this.processNewMatch(summoner, otherMatch);
+                message = "found new match";
+            }
         }
         else if (message == null) {
             message = "no new match";
@@ -107,10 +105,25 @@ public class AccountTracker {
             String matchId = newMatch.getMetadata().getId().split("_")[1];
             String thumbnail = CHAMP_ICON_PATH.formatted(tracked.getChampionId());
             String title = TITLE_TEMPLATE.formatted(this.trackedAccount.getRiotId().toString(), (won ? "won" : "lost"), (won ? "!" : "."));
-            String previousRankString = LeagueUtils.getAbbreviatedRankString(this.latestEntry);
-            String newRankString = LeagueUtils.getAbbreviatedRankString(newEntry);
-            String lpChange = LeagueUtils.calculateLeaguePointChange(this.latestEntry, newEntry);
-            String changeDescription = CHANGE_DESCRIPTION_TEMPLATE.formatted(previousRankString, newRankString);
+
+            String lpChange;
+            String changeDescription;
+            if (this.latestEntry != null && this.latestMatch != null) {
+                if (newEntry != null) {
+                    lpChange = LeagueUtils.calculateLeaguePointChange(this.latestEntry, newEntry);
+                    String previousRankString = LeagueUtils.getAbbreviatedRankString(this.latestEntry);
+                    String newRankString = LeagueUtils.getAbbreviatedRankString(newEntry);
+                    changeDescription = CHANGE_DESCRIPTION_TEMPLATE.formatted(previousRankString, newRankString);
+                }
+                else {
+                    lpChange = "???";
+                    changeDescription = "Something has gone seriously wrong if you are seeing this";
+                }
+            }
+            else {
+                lpChange = "PROVISIONALS";
+                changeDescription = RankIcon.UNRANKED.getEmoji() + " Unranked";
+            }
             String footer = FOOTER_TEMPLATE.formatted(matchId);
 
             ScoreProvider scoreProvider = new PiggyScoreV2(newMatch);
