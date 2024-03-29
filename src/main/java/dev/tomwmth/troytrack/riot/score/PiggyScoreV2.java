@@ -37,7 +37,6 @@ public class PiggyScoreV2 extends ScoreProvider {
 
     @Override
     public int calculateScore(@NotNull Participant participant) {
-        int teamId = participant.getTeamId();
         float individualChampionHealth = this.getTotalHealthToChampions(participant);
         float individualObjectiveDamage = this.getTotalDamageDealtToObjectives(participant);
 
