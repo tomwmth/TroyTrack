@@ -22,7 +22,17 @@ public abstract class ScoreProvider {
     public abstract int calculateScore(@NotNull Participant participant);
 
     public float calculateKDA(@NotNull Participant participant) {
-        return (participant.getKills() + participant.getAssists()) / (float) participant.getDeaths();
+        int takedowns = participant.getKills() + participant.getAssists();
+        float kda = takedowns / (float) participant.getDeaths();
+
+        if (Float.isInfinite(kda)) {
+            kda = (float) takedowns;
+        }
+        else if (Float.isNaN(kda)) {
+            kda = 0.0F;
+        }
+
+        return kda;
     }
 
     public float calculateCSPM(@NotNull Participant participant) {
