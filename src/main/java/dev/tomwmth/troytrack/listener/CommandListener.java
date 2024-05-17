@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEven
 import net.dv8tion.jda.api.interactions.commands.Command;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,13 +64,16 @@ public class CommandListener extends EventListener {
             method.invoke(command, arguments);
         }
         catch (Exception ex) {
+            Throwable t = ex;
+            if (ex instanceof InvocationTargetException) {
+                t = ex.getCause().getCause();
+            }
+
             Reference.LOGGER.error("Unable to execute command {} (Guild: {}, User: {}/{}, Channel: {})",
                     command.getName(), guild, event.getUser().getName(), event.getUser().getId(),
-                    event.getChannel().getId(), ex);
+                    event.getChannel().getId(), t);
 
-            if (!event.isAcknowledged()) {
-                event.replyEmbeds(EmbedUtils.failure("An internal error occurred while processing this command").build()).queue();
-            }
+            event.getHook().editOriginalEmbeds(EmbedUtils.failure("An internal error occurred while processing this command").build()).queue();
         }
 
         Reference.LOGGER.info("Slash command executed in {}ms (Command: {}, Guild: {}, User: {}/{}, Arguments: {})",
