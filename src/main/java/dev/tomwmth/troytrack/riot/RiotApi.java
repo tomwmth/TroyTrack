@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import dev.tomwmth.troytrack.Config;
 import dev.tomwmth.troytrack.Reference;
+import dev.tomwmth.viego.ApiCredentials;
 import dev.tomwmth.viego.Viego;
 import dev.tomwmth.viego.lol.constants.GameQueue;
 import dev.tomwmth.viego.lol.constants.RankedQueue;
@@ -68,7 +69,12 @@ public class RiotApi {
     private final ScheduledExecutorService trackerExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public RiotApi() {
-        Viego.setApiKey(System.getProperty("riot.token"));
+        Viego.setApiCredentials(
+                ApiCredentials.builder()
+                        .leagueOfLegends(System.getProperty("riot.lol.token"))
+//                        .teamfightTactics(System.getProperty("riot.tft.token"))
+                        .build()
+        );
 
         var trackedAccounts = Config.getSettings().getTrackedAccounts();
         for (int i = 0; i < trackedAccounts.size(); i++) {
