@@ -47,7 +47,8 @@ public class RiotApi {
             .expireAfterWrite(Duration.of(5L, ChronoUnit.MINUTES))
             .concurrencyLevel(1)
             .build(new CacheLoader<>() {
-                @Override @NotNull
+                @Override
+                @NotNull
                 public RiotAccount load(@NotNull RiotId key) {
                     return AccountV1.getAccountByRiotId(key.getGameName(), key.getTagLine(), Region.EUROPE).getValue();
                 }
@@ -58,7 +59,8 @@ public class RiotApi {
             .expireAfterWrite(Duration.of(5L, ChronoUnit.MINUTES))
             .concurrencyLevel(1)
             .build(new CacheLoader<>() {
-                @Override @NotNull
+                @Override
+                @NotNull
                 public Summoner load(@NotNull RiotAccount key) {
                     return SummonerV4.getSummonerByPuuid(key.getPuuid(), Platform.OC1).getValue();
                 }
@@ -85,13 +87,11 @@ public class RiotApi {
                 this.trackerExecutor.scheduleWithFixedDelay(() -> {
                     try {
                         tracker.heartbeat();
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         Reference.LOGGER.error("Error executing tracker heartbeat for summoner \"{}\"", tracker.getTrackedAccount().getRiotId(), ex);
                     }
                 }, 500L * i, 20_000L, TimeUnit.MILLISECONDS);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Reference.LOGGER.error("Error loading tracker for account \"{}\"", trackedAccount.getRiotId(), ex);
             }
         }

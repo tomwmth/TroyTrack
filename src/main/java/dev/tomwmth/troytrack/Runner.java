@@ -23,8 +23,7 @@ public class Runner {
                     String value = line.substring(line.indexOf('=') + 1);
                     System.setProperty(key, value);
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Reference.LOGGER.error("Unable to read .env file", ex);
             }
         }
@@ -36,8 +35,7 @@ public class Runner {
 
         try {
             thread.join();
-        }
-        catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
             Reference.LOGGER.error("Initialization thread was interrupted", ex);
         }
 

@@ -13,10 +13,10 @@ import java.awt.*;
  */
 @UtilityClass
 public final class EmbedUtils {
-    private static final String FOOTER = "";
     public static final Color NEUTRAL_COLOR = new Color(0x5326E6);
     public static final Color SUCCESS_COLOR = new Color(0x26E65C);
     public static final Color ERROR_COLOR = new Color(0xf42c2c);
+    private static final String FOOTER = "";
 
     @NotNull
     public static EmbedBuilder of(@NotNull String title, @Nullable String description) {

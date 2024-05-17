@@ -13,7 +13,10 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -61,8 +64,7 @@ public class TroyTrack {
                     EventListener listener = (EventListener) clazz.getDeclaredConstructor(TroyTrack.class).newInstance(this);
                     this.jda.addEventListener(listener);
                     this.registeredListeners.add(listener);
-                }
-                catch (ReflectiveOperationException ex) {
+                } catch (ReflectiveOperationException ex) {
                     Reference.LOGGER.error("Error instantiating " + clazz.getSimpleName(), ex);
                 }
             }
@@ -79,8 +81,7 @@ public class TroyTrack {
                 try {
                     Command command = (Command) clazz.getDeclaredConstructor(TroyTrack.class).newInstance(this);
                     commands.add(command);
-                }
-                catch (ReflectiveOperationException ex) {
+                } catch (ReflectiveOperationException ex) {
                     Reference.LOGGER.error("Error instantiating " + clazz.getSimpleName(), ex);
                 }
             }
@@ -97,8 +98,7 @@ public class TroyTrack {
                     .filter(clazz -> clazz.getPackageName().contains(packageName))
                     .map(ClassPath.ClassInfo::load)
                     .collect(Collectors.toUnmodifiableSet());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Reference.LOGGER.error("Error scanning classpath", ex);
         }
         return clazzes;

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * Created on 2/19/23
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 public @interface SubCommand {
     @NotNull
     String name() default "";

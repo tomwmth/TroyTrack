@@ -24,8 +24,7 @@ public class ShortArgument extends Argument<Short> {
     public @Nullable Short deserialize(@NotNull Object input) {
         try {
             return Short.parseShort(input.toString());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

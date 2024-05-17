@@ -24,8 +24,7 @@ public class DoubleArgument extends Argument<Double> {
     public @Nullable Double deserialize(@NotNull Object input) {
         try {
             return Double.parseDouble(input.toString());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

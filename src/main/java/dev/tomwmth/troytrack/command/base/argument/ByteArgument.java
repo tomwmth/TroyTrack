@@ -24,8 +24,7 @@ public class ByteArgument extends Argument<Byte> {
     public @Nullable Byte deserialize(@NotNull Object input) {
         try {
             return Byte.parseByte(input.toString());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

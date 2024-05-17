@@ -19,15 +19,13 @@ public abstract class Command {
     protected final TroyTrack bot;
 
     protected final JDA jda;
-
-    @Getter @Setter
-    protected CommandData commandData;
-
     @Getter
     protected final List<CommandData> contextCommands = new ArrayList<>();
-
     @Getter
     private final boolean guildOnly;
+    @Getter
+    @Setter
+    protected CommandData commandData;
 
     public Command(@NotNull TroyTrack bot) {
         this.bot = bot;

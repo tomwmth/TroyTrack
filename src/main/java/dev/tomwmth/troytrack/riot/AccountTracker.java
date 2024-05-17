@@ -46,7 +46,8 @@ public class AccountTracker {
     @NotNull
     private final RiotApi api;
 
-    @Getter @NotNull
+    @Getter
+    @NotNull
     private final TrackedAccount trackedAccount;
 
     @Nullable
@@ -89,8 +90,7 @@ public class AccountTracker {
                 && !otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
             this.processNewMatch(summoner, otherMatch);
             message = "found new match";
-        }
-        else if (message == null) {
+        } else if (message == null) {
             message = "no new match";
         }
 
@@ -119,8 +119,7 @@ public class AccountTracker {
             for (Participant participant : newMatch.getInfo().getParticipants()) {
                 if (tracked.getPuuid().equals(participant.getPuuid())) {
                     trackedScore = scoreProvider.calculateScore(participant);
-                }
-                else if (tracked.getTeamId() == participant.getTeamId()) {
+                } else if (tracked.getTeamId() == participant.getTeamId()) {
                     teamTotal += scoreProvider.calculateScore(participant);
                 }
             }
@@ -146,8 +145,7 @@ public class AccountTracker {
                     .setColor(won ? EmbedUtils.SUCCESS_COLOR : EmbedUtils.ERROR_COLOR)
                     .build();
             this.sendMessage(eb);
-        }
-        else {
+        } else {
             Reference.LOGGER.info("Detected match was a remake, ignoring...");
         }
 

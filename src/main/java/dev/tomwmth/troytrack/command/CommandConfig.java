@@ -31,8 +31,7 @@ public class CommandConfig extends Command {
                     EmbedUtils.success("The configuration was reloaded in %dms".formatted(elapsed))
                             .build()
             ).queue();
-        }
-        else {
+        } else {
             event.replyEmbeds(
                     EmbedUtils.failure("You do not have permission to execute this command")
                             .build()

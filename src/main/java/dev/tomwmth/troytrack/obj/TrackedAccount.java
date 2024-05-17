@@ -12,7 +12,8 @@ import java.util.List;
  * @author Thomas Wearmouth <tomwmth@pm.me>
  * Created on 2/03/2024
  */
-@Getter @AllArgsConstructor
+@Getter
+@AllArgsConstructor
 public final class TrackedAccount {
     private final RiotId riotId;
     private final Platform platform;

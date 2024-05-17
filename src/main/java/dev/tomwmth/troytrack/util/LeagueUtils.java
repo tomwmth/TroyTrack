@@ -13,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @UtilityClass
 public final class LeagueUtils {
-    private static final String[] PLATFORM_STRINGS = { "Oceania", "North America", "Europe West", "Europe Nordic & East", "Korea", "Japan", "Brazil", "Latin America North", "Latin America South", "Russia", "Turkey", "Singapore", "Philippines", "Taiwan", "Vietnam", "Thailand" };
-
     public static int calculateWinRate(int gamesWon, int totalGames) {
         float percentage = (float) gamesWon / (float) totalGames;
         return Math.round(percentage * 100.0F);
@@ -27,14 +25,12 @@ public final class LeagueUtils {
                 return "PROMOTED!";
             else
                 return "DEMOTED!";
-        }
-        else if (before.getDivision() != after.getDivision()) {
+        } else if (before.getDivision() != after.getDivision()) {
             if (before.getDivision().ordinal() > after.getDivision().ordinal())
                 return "PROMOTED!";
             else
                 return "DEMOTED!";
-        }
-        else {
+        } else {
             String str = "";
             int lpChange = after.getPoints() - before.getPoints();
             if (lpChange >= 0)
@@ -53,12 +49,11 @@ public final class LeagueUtils {
         RankedDivision division = leagueEntry.getDivision();
         int lp = leagueEntry.getPoints();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(convertToTitleCase(tier.name())).append(" ");
-        sb.append(division).append(" ");
-        sb.append("(").append(lp).append(" LP)");
+        String sb = convertToTitleCase(tier.name()) + " " +
+                division + " " +
+                "(" + lp + " LP)";
 
-        return sb.toString();
+        return sb;
     }
 
     @NotNull
@@ -67,13 +62,12 @@ public final class LeagueUtils {
         RankedDivision division = leagueEntry.getDivision();
         int lp = leagueEntry.getPoints();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(RankIcon.valueOf(tier).getEmoji()).append(" ");
-        sb.append(tier.name().charAt(0));
-        sb.append(RomanNumerals.convertFrom(division.name())).append(" ");
-        sb.append("(").append(lp).append(" LP)");
+        String sb = RankIcon.valueOf(tier).getEmoji() + " " +
+                tier.name().charAt(0) +
+                RomanNumerals.convertFrom(division.name()) + " " +
+                "(" + lp + " LP)";
 
-        return sb.toString();
+        return sb;
     }
 
     @NotNull
@@ -84,12 +78,10 @@ public final class LeagueUtils {
         for (char ch : text.toCharArray()) {
             if (Character.isSpaceChar(ch)) {
                 convertNext = true;
-            }
-            else if (convertNext) {
+            } else if (convertNext) {
                 ch = Character.toTitleCase(ch);
                 convertNext = false;
-            }
-            else {
+            } else {
                 ch = Character.toLowerCase(ch);
             }
             sb.append(ch);

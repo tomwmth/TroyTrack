@@ -83,8 +83,7 @@ public class CommandRegistry {
                         commandData.addOptions(options.stream().map(Pair::getFirst).toList());
                         this.commandFunctions.put(name, new RegisteredSlashCommand(method, options.stream().map(Pair::getSecond).toList()));
                     }
-                }
-                else if (method.isAnnotationPresent(SubCommand.class)) {
+                } else if (method.isAnnotationPresent(SubCommand.class)) {
                     var subcommand = method.getAnnotation(SubCommand.class);
                     var options = this.parse(method);
                     if (options == null)
@@ -104,13 +103,11 @@ public class CommandRegistry {
                             subcommandGroups.add(new SubcommandGroupData(groupName, groupDescription).addSubcommands(data));
 
                         group += groupName + "." + scName;
-                    }
-                    else
+                    } else
                         group += scName;
                     commandData.addSubcommands(data);
                     this.commandFunctions.put(group, new RegisteredSlashCommand(method, options.stream().map(Pair::getSecond).toList()));
-                }
-                else if (method.isAnnotationPresent(Context.class)) {
+                } else if (method.isAnnotationPresent(Context.class)) {
                     var parameters = method.getParameters();
                     if (parameters.length == 0)
                         continue;
@@ -202,16 +199,14 @@ public class CommandRegistry {
                         options.add(Pair.of(data, new UserArgument(name)));
                     else if (type == IMentionable.class)
                         options.add(Pair.of(data, new MentionableArgument(name)));
-                }
-                else if (type.isEnum()) {
+                } else if (type.isEnum()) {
                     var data = new OptionData(OptionType.STRING, name, description, required);
                     data.addChoices(Stream.of(type.getEnumConstants()).map(e -> {
                         var enumeration = (Enum<?>) e;
                         return new net.dv8tion.jda.api.interactions.commands.Command.Choice(enumeration.toString(), enumeration.name().toLowerCase());
                     }).toList());
                     options.add(Pair.of(data, new EnumArgument(name, (Class<Enum<?>>) type, defaultValue)));
-                }
-                else {
+                } else {
                     Reference.LOGGER.warn("Slash command option `{}` on command `{}` in class {} is an invalid type",
                             name, method.getName(), method.getDeclaringClass().getName());
                 }
@@ -338,11 +333,8 @@ public class CommandRegistry {
                         return true;
                     }
                 }
-            }
-            else {
-                if (!commandData.getName().equals(command.getName()) || commandData.getType() != command.getType()) {
-                    return true;
-                }
+            } else {
+                return !commandData.getName().equals(command.getName()) || commandData.getType() != command.getType();
             }
         }
 

@@ -77,10 +77,10 @@ public class CommandRank extends Command {
                             String title = TITLE_TEMPLATE.formatted(account.getDisplayId(), LeagueUtils.getRankString(leagueEntry));
                             String statsDescription = STATS_DESCRIPTION_TEMPLATE.formatted(gamesTotal, gamesWon, gamesLost, winRate);
                             String flagsDescription = FLAGS_DESCRIPTION_TEMPLATE.formatted(
-                                    leagueEntry.isHotStreak()  ? YES : NO,
-                                    leagueEntry.isVeteran()    ? YES : NO,
+                                    leagueEntry.isHotStreak() ? YES : NO,
+                                    leagueEntry.isVeteran() ? YES : NO,
                                     leagueEntry.isFreshBlood() ? YES : NO,
-                                    leagueEntry.isInactive()   ? YES : NO
+                                    leagueEntry.isInactive() ? YES : NO
                             );
 
                             event.getHook().editOriginalEmbeds(
@@ -90,8 +90,7 @@ public class CommandRank extends Command {
                                             .setThumbnail(RankIcon.valueOf(leagueEntry.getTier()).getIcon())
                                             .build()
                             ).queue();
-                        }
-                        else {
+                        } else {
                             String title = TITLE_TEMPLATE.formatted(account.getDisplayId(), "UNRANKED");
                             event.getHook().editOriginalEmbeds(
                                     EmbedUtils.of(title, null)
@@ -102,8 +101,7 @@ public class CommandRank extends Command {
                     }, status -> this.onFailure(event, status));
                 }, status -> this.onFailure(event, status));
             }, status -> this.onFailure(event, status));
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }

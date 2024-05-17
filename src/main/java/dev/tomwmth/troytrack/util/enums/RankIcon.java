@@ -32,16 +32,6 @@ public enum RankIcon {
         this.emojiId = emojiId;
     }
 
-    public String getIcon() {
-        if (this.tier == null)
-            return "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked_crest_placeholder_2.png";
-        return CDRAGON_PATH.formatted(this.name().toLowerCase());
-    }
-
-    public String getEmoji() {
-        return EMOJI_FORMAT.formatted(this.name().toLowerCase(), this.emojiId);
-    }
-
     public static RankIcon valueOf(RankedTier rankedTier) {
         if (rankedTier == null) {
             throw new NullPointerException("RankedTier is null");
@@ -54,5 +44,15 @@ public enum RankIcon {
         }
 
         throw new IllegalArgumentException("No enum constant matching " + rankedTier.getClass().getName());
+    }
+
+    public String getIcon() {
+        if (this.tier == null)
+            return "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked_crest_placeholder_2.png";
+        return CDRAGON_PATH.formatted(this.name().toLowerCase());
+    }
+
+    public String getEmoji() {
+        return EMOJI_FORMAT.formatted(this.name().toLowerCase(), this.emojiId);
     }
 }

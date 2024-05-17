@@ -24,8 +24,7 @@ public class LongArgument extends Argument<Long> {
     public @Nullable Long deserialize(@NotNull Object input) {
         try {
             return Long.parseLong(input.toString());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

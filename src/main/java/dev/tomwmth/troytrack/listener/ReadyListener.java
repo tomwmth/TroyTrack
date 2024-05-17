@@ -1,7 +1,7 @@
 package dev.tomwmth.troytrack.listener;
 
-import dev.tomwmth.troytrack.TroyTrack;
 import dev.tomwmth.troytrack.Reference;
+import dev.tomwmth.troytrack.TroyTrack;
 import dev.tomwmth.troytrack.command.base.CommandRegistry;
 import dev.tomwmth.troytrack.listener.base.EventListener;
 import net.dv8tion.jda.api.entities.Guild;

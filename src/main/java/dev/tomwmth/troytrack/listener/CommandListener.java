@@ -1,7 +1,7 @@
 package dev.tomwmth.troytrack.listener;
 
-import dev.tomwmth.troytrack.TroyTrack;
 import dev.tomwmth.troytrack.Reference;
+import dev.tomwmth.troytrack.TroyTrack;
 import dev.tomwmth.troytrack.listener.base.EventListener;
 import dev.tomwmth.troytrack.util.EmbedUtils;
 import net.dv8tion.jda.api.entities.Member;
@@ -62,8 +62,7 @@ public class CommandListener extends EventListener {
             }
 
             method.invoke(command, arguments);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Throwable t = ex;
             if (ex instanceof InvocationTargetException) {
                 t = ex.getCause().getCause();
@@ -102,16 +101,14 @@ public class CommandListener extends EventListener {
                 if (type == Command.Type.MESSAGE) {
                     var ev = (MessageContextInteractionEvent) event;
                     arguments[1] = ev.getTarget();
-                }
-                else {
+                } else {
                     var ev = (UserContextInteractionEvent) event;
                     arguments[1] = parameters[1].getType() == Member.class ? ev.getTargetMember() : ev.getTarget();
                 }
             }
 
             method.invoke(command, arguments);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             var channel = event.getChannel();
             if (channel == null)
                 return;

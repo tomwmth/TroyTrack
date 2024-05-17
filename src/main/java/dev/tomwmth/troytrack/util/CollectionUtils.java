@@ -13,7 +13,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Thomas Wearmouth
  */
-@UtilityClass @SuppressWarnings("unchecked")
+@UtilityClass
+@SuppressWarnings("unchecked")
 public final class CollectionUtils {
     /**
      * Creates a new list with the specified objects.
@@ -21,14 +22,14 @@ public final class CollectionUtils {
      * This method makes no assertion as to the ordering of
      * the list. For an ordered list, use {@link CollectionUtils#linkedList(T[])}.
      *
-     * @param <T> the type of the elements in the list
-     *
+     * @param <T>   the type of the elements in the list
      * @param items the objects to add to the list
      * @return the list
-     *
      * @see java.util.ArrayList
      */
-    @SafeVarargs @NotNull @Contract("null -> fail")
+    @SafeVarargs
+    @NotNull
+    @Contract("null -> fail")
     public static <T> List<T> list(@NotNull T... items) {
         List<T> list = new ArrayList<>(items.length);
         Collections.addAll(list, items);
@@ -38,14 +39,14 @@ public final class CollectionUtils {
     /**
      * Creates a new ordered list with the specified objects.
      *
-     * @param <T> the type of the elements in the list
-     *
+     * @param <T>   the type of the elements in the list
      * @param items the objects to add to the list
      * @return the list
-     *
      * @see java.util.LinkedList
      */
-    @SafeVarargs @NotNull @Contract("null -> fail")
+    @SafeVarargs
+    @NotNull
+    @Contract("null -> fail")
     public static <T> LinkedList<T> linkedList(@NotNull T... items) {
         LinkedList<T> list = new LinkedList<>();
         Collections.addAll(list, items);
@@ -58,14 +59,14 @@ public final class CollectionUtils {
      * This method makes no assertion as to the ordering of
      * the list. For an ordered list, use {@link CollectionUtils#linkedSet(T[])}.
      *
-     * @param <T> the type of the elements in the set
-     *
+     * @param <T>   the type of the elements in the set
      * @param items the objects to add to the set
      * @return the set
-     *
      * @see java.util.HashSet
      */
-    @SafeVarargs @NotNull @Contract("null -> fail")
+    @SafeVarargs
+    @NotNull
+    @Contract("null -> fail")
     public static <T> Set<T> set(@NotNull T... items) {
         Set<T> set = new HashSet<>(items.length);
         Collections.addAll(set, items);
@@ -75,14 +76,14 @@ public final class CollectionUtils {
     /**
      * Creates a new ordered list with the specified objects.
      *
-     * @param <T> the type of the elements in the set
-     *
+     * @param <T>   the type of the elements in the set
      * @param items the objects to add to the set
      * @return the set
-     *
      * @see java.util.LinkedHashSet
      */
-    @SafeVarargs @NotNull @Contract("null -> fail")
+    @SafeVarargs
+    @NotNull
+    @Contract("null -> fail")
     public static <T> LinkedHashSet<T> linkedSet(@NotNull T... items) {
         LinkedHashSet<T> set = new LinkedHashSet<>(items.length);
         Collections.addAll(set, items);
@@ -100,12 +101,10 @@ public final class CollectionUtils {
      * If the number of varargs is odd, the method will quietly
      * ignore them.
      *
-     * @param <K> the type of the keys in the map
-     * @param <V> the type of the values in the map
-     *
+     * @param <K>   the type of the keys in the map
+     * @param <V>   the type of the values in the map
      * @param items the keys and values to add to the map
      * @return the map
-     *
      * @see java.util.HashMap
      */
     @NotNull
@@ -134,12 +133,10 @@ public final class CollectionUtils {
      * If the number of varargs is odd, the method will quietly
      * ignore them.
      *
-     * @param <K> the type of the keys in the map
-     * @param <V> the type of the values in the map
-     *
+     * @param <K>   the type of the keys in the map
+     * @param <V>   the type of the values in the map
      * @param items the keys and values to add to the map
      * @return the map
-     *
      * @see java.util.LinkedHashMap
      */
     @NotNull

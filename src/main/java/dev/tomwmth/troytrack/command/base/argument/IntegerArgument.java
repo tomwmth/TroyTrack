@@ -24,8 +24,7 @@ public class IntegerArgument extends Argument<Integer> {
     public @Nullable Integer deserialize(@NotNull Object input) {
         try {
             return Integer.parseInt(input.toString());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

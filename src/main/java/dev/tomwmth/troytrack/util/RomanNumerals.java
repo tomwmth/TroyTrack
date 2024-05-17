@@ -10,9 +10,9 @@ import java.util.regex.Pattern;
 /**
  * Utility for converting strings to and from roman numerals.
  *
- * @see <a href="https://stackoverflow.com/a/19759564">Converting Integers to Roman Numerals</a>
  * @author Ben-Hur Langoni Junior
  * @author Thomas Wearmouth
+ * @see <a href="https://stackoverflow.com/a/19759564">Converting Integers to Roman Numerals</a>
  * @since 0.1.0
  */
 @UtilityClass
@@ -76,13 +76,11 @@ public final class RomanNumerals {
                 if (currentVal < nextVal) {
                     result += nextVal - currentVal;
                     i += 2;
-                }
-                else {
+                } else {
                     result += currentVal;
                     i += 1;
                 }
-            }
-            else {
+            } else {
                 result += currentVal;
                 i += 1;
             }

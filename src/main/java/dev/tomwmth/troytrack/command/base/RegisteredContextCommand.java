@@ -8,5 +8,6 @@ import java.lang.reflect.Method;
  * @author BestBearr <crumbygames12@gmail.com>
  * Created on 2/20/23
  */
-public record RegisteredContextCommand(@NotNull Command command, @NotNull Method method, @NotNull net.dv8tion.jda.api.interactions.commands.Command.Type type) {
+public record RegisteredContextCommand(@NotNull Command command, @NotNull Method method,
+                                       @NotNull net.dv8tion.jda.api.interactions.commands.Command.Type type) {
 }

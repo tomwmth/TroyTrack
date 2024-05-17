@@ -24,8 +24,7 @@ public class FloatArgument extends Argument<Float> {
     public @Nullable Float deserialize(@NotNull Object input) {
         try {
             return Float.parseFloat(input.toString());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }

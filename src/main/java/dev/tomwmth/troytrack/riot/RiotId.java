@@ -23,17 +23,17 @@ public final class RiotId {
         this.tagLine = tagLine;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s#%s", this.gameName, this.tagLine);
-    }
-
     @Nullable
     public static RiotId parse(@NotNull String id) throws IllegalArgumentException {
         String[] split = id.split("#");
         if (split.length == 2)
             return new RiotId(split[0], split[1]);
         else return null;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s#%s", this.gameName, this.tagLine);
     }
 
     public static final class Adapter extends TypeAdapter<RiotId> {
