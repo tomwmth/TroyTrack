@@ -1,12 +1,9 @@
 package dev.tomwmth.troytrack.util;
 
 import dev.tomwmth.troytrack.util.enums.RankIcon;
-import dev.tomwmth.viego.lol.constants.RankedDivision;
-import dev.tomwmth.viego.lol.constants.RankedTier;
 import dev.tomwmth.viego.lol.league.v4.obj.LeagueEntry;
-import dev.tomwmth.viego.lol.match.v5.obj.Match;
-import dev.tomwmth.viego.lol.match.v5.obj.Participant;
-import dev.tomwmth.viego.routing.Platform;
+import dev.tomwmth.viego.shared.constants.RankedDivision;
+import dev.tomwmth.viego.shared.constants.RankedTier;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 

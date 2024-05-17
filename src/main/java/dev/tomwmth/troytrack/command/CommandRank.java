@@ -67,7 +67,7 @@ public class CommandRank extends Command {
             AccountV1.getAccountByRiotId(riotId.getGameName(), riotId.getTagLine(), Region.EUROPE).ifPresentOrElse(account -> {
                 SummonerV4.getSummonerByPuuid(account.getPuuid(), platform).ifPresentOrElse(summoner -> {
                     LeagueV4.getEntriesBySummonerId(summoner.getSummonerId(), platform).ifPresentOrElse(entries -> {
-                        Optional<LeagueEntry> opt = entries.stream().filter(e -> e.getQueueType() == (queue == null ? RankedQueue.RANKED_SOLO_5x5 : queue)).findFirst();
+                        Optional<LeagueEntry> opt = entries.stream().filter(e -> e.getQueueType() == (queue == null ? RankedQueue.RANKED_SOLO_DUO : queue)).findFirst();
                         if (opt.isPresent()) {
                             LeagueEntry leagueEntry = opt.get();
                             int gamesWon = leagueEntry.getWins(), gamesLost = leagueEntry.getLosses();

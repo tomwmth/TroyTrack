@@ -61,7 +61,7 @@ public class AccountTracker {
 
         RiotAccount account = this.api.getRiotAccountById(this.trackedAccount.getRiotId());
         Summoner summoner = this.api.getSummonerByRiotAccount(account);
-        this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
+        this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_DUO);
         this.latestMatch = this.api.getLatestMatch(account, this.trackedAccount.getPlatform());
     }
 
@@ -75,7 +75,7 @@ public class AccountTracker {
 
         if (this.latestEntry == null) {
             broken = true;
-            this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
+            this.latestEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_DUO);
             message = "latest entry was null, attempted fix";
         }
 
@@ -98,7 +98,7 @@ public class AccountTracker {
     }
 
     private void processNewMatch(Summoner summoner, Match newMatch) {
-        LeagueEntry newEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_5x5);
+        LeagueEntry newEntry = this.api.getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_DUO);
         boolean remake = (newMatch.getInfo().getDuration() / 60.0F) < 5;
         if (!remake) {
             Participant tracked = newMatch.getParticipant(summoner.getPuuid());
