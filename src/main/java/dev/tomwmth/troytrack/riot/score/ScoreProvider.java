@@ -22,17 +22,21 @@ public abstract class ScoreProvider {
     public abstract int calculateScore(@NotNull Participant participant);
 
     public float calculateKDA(@NotNull Participant participant) {
-        int takedowns = participant.getKills() + participant.getAssists();
-        float kda = takedowns / (float) participant.getDeaths();
+        float kda = participant.getTakedowns() / (float) participant.getDeaths();
 
-        if (Float.isInfinite(kda)) {
-            kda = (float) takedowns;
-        }
-        else if (Float.isNaN(kda)) {
+        if (Float.isNaN(kda)) {
             kda = 0.0F;
         }
 
         return kda;
+    }
+
+    public float calculateKP(@NotNull Participant participant) {
+        int totalTeamKills = this.participants.stream()
+                .filter(x -> x.getTeamId() == participant.getTeamId())
+                .map(Participant::getKills)
+                .reduce(0, Integer::sum);
+        return (float) participant.getTakedowns() / totalTeamKills;
     }
 
     public float calculateCSPM(@NotNull Participant participant) {

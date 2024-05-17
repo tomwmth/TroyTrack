@@ -19,7 +19,7 @@ dependencies {
     implementation("net.dv8tion:JDA:5.0.0-beta.24") {
         exclude("org.slf4j")
     }
-    implementation("dev.tomwmth:viego:1.0.0-beta.1") {
+    implementation("dev.tomwmth:viego:1.0.0-beta.2") {
         exclude("org.slf4j")
     }
     implementation("com.google.code.gson:gson:2.10.1")

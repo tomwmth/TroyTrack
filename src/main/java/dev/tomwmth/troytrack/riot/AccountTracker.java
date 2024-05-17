@@ -33,7 +33,7 @@ public class AccountTracker {
     private static final String CHAMP_ICON_PATH = "https://cdn.communitydragon.org/latest/champion/%d/square";
     private static final String TITLE_TEMPLATE = "%s %s a match%s";
     private static final String DESCRIPTION_TEMPLATE = """
-            ● **%d**/**%d**/**%d** (%.2f KDA)
+            ● **%d**/**%d**/**%d** (%.2f KDA, %d%% KP)
             ● **%d CS** (%.1f per min)
 
             You can view the full game recap [here](%s).
@@ -132,8 +132,8 @@ public class AccountTracker {
             String link = GAME_INFO_PATH.formatted(matchId, tracked.getId());
             String description = DESCRIPTION_TEMPLATE.formatted(
                     tracked.getKills(), tracked.getDeaths(), tracked.getAssists(), scoreProvider.calculateKDA(tracked),
-                    scoreProvider.calculateCS(tracked), scoreProvider.calculateCSPM(tracked),
-                    link
+                    Math.round(scoreProvider.calculateKP(tracked) * 100.0F), scoreProvider.calculateCS(tracked),
+                    scoreProvider.calculateCSPM(tracked), link
             );
 
             MessageEmbed eb = new EmbedBuilder()

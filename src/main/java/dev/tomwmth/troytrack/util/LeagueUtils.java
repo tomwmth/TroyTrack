@@ -4,6 +4,8 @@ import dev.tomwmth.troytrack.util.enums.RankIcon;
 import dev.tomwmth.viego.lol.constants.RankedDivision;
 import dev.tomwmth.viego.lol.constants.RankedTier;
 import dev.tomwmth.viego.lol.league.v4.obj.LeagueEntry;
+import dev.tomwmth.viego.lol.match.v5.obj.Match;
+import dev.tomwmth.viego.lol.match.v5.obj.Participant;
 import dev.tomwmth.viego.routing.Platform;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
@@ -75,29 +77,6 @@ public final class LeagueUtils {
         sb.append("(").append(lp).append(" LP)");
 
         return sb.toString();
-    }
-
-    @NotNull
-    public static Platform platformFromString(@NotNull String platformString) {
-        return switch (platformString) {
-            case "Oceania" -> Platform.OC1;
-            case "North America" -> Platform.NA1;
-            case "Europe West" -> Platform.EUW1;
-            case "Europe Nordic & East" -> Platform.EUN1;
-            case "Korea" -> Platform.KR;
-            case "Japan" -> Platform.JP1;
-            case "Brazil" -> Platform.BR1;
-            case "Latin America North" -> Platform.LA1;
-            case "Latin America South" -> Platform.LA2;
-            case "Russia" -> Platform.RU;
-            case "Turkey" -> Platform.TR1;
-            case "Singapore" -> Platform.SG2;
-            case "Philippines" -> Platform.PH2;
-            case "Taiwan" -> Platform.TW2;
-            case "Vietnam" -> Platform.VN2;
-            case "Thailand" -> Platform.TH2;
-            default -> throw new IllegalArgumentException("Invalid platform: " + platformString);
-        };
     }
 
     @NotNull
