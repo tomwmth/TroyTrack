@@ -4,7 +4,7 @@ import dev.tomwmth.troytrack.TroyTrack;
 import dev.tomwmth.troytrack.command.base.Command;
 import dev.tomwmth.troytrack.command.base.annotation.Option;
 import dev.tomwmth.troytrack.command.base.annotation.SlashCommand;
-import dev.tomwmth.troytrack.riot.RiotId;
+import dev.tomwmth.troytrack.tracker.RiotId;
 import dev.tomwmth.troytrack.util.EmbedUtils;
 import dev.tomwmth.troytrack.util.LeagueUtils;
 import dev.tomwmth.troytrack.util.enums.RankIcon;
@@ -91,7 +91,7 @@ public class CommandRank extends Command {
                                             .build()
                             ).queue();
                         } else {
-                            String title = TITLE_TEMPLATE.formatted(account.getDisplayId(), "UNRANKED");
+                            String title = TITLE_TEMPLATE.formatted(account.getDisplayId(), "Unranked");
                             event.getHook().editOriginalEmbeds(
                                     EmbedUtils.of(title, null)
                                             .setThumbnail(RankIcon.UNRANKED.getIcon())

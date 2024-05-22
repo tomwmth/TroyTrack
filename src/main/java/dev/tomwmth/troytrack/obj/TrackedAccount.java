@@ -1,6 +1,6 @@
 package dev.tomwmth.troytrack.obj;
 
-import dev.tomwmth.troytrack.riot.RiotId;
+import dev.tomwmth.troytrack.tracker.RiotId;
 import dev.tomwmth.viego.internal.RiotGame;
 import dev.tomwmth.viego.routing.Platform;
 import lombok.AllArgsConstructor;

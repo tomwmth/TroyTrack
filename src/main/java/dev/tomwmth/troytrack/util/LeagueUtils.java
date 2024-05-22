@@ -6,6 +6,7 @@ import dev.tomwmth.viego.shared.constants.RankedDivision;
 import dev.tomwmth.viego.shared.constants.RankedTier;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Thomas Wearmouth <tomwmth@pm.me>
@@ -18,8 +19,11 @@ public final class LeagueUtils {
         return Math.round(percentage * 100.0F);
     }
 
-    @NotNull
-    public static String calculateLeaguePointChange(@NotNull LeagueEntry before, @NotNull LeagueEntry after) {
+    public static @NotNull String calculateLeaguePointChange(@Nullable LeagueEntry before, @Nullable LeagueEntry after) {
+        if (before == null || before.getTier() == null || before.getDivision() == null ||
+            after == null || after.getTier() == null || after.getDivision() == null)  {
+            return "PLACED!";
+        }
         if (before.getTier() != after.getTier()) {
             if (before.getTier().ordinal() < after.getTier().ordinal())
                 return "PROMOTED!";
@@ -31,62 +35,43 @@ public final class LeagueUtils {
             else
                 return "DEMOTED!";
         } else {
-            String str = "";
             int lpChange = after.getPoints() - before.getPoints();
-            if (lpChange >= 0)
-                str += "+";
-            else
-                str += "-";
-            str += Math.abs(lpChange);
-            str += " LP";
-            return str;
+            return String.format("%s%d LP", (lpChange >= 0) ? "+" : "-", Math.abs(lpChange));
         }
     }
 
-    @NotNull
-    public static String getRankString(@NotNull LeagueEntry leagueEntry) {
-        RankedTier tier = leagueEntry.getTier();
-        RankedDivision division = leagueEntry.getDivision();
-        int lp = leagueEntry.getPoints();
+    public static @NotNull String getRankString(@Nullable LeagueEntry leagueEntry) {
+        if (leagueEntry != null) {
+            RankedTier tier = leagueEntry.getTier();
+            RankedDivision division = leagueEntry.getDivision();
 
-        String sb = convertToTitleCase(tier.name()) + " " +
-                division + " " +
-                "(" + lp + " LP)";
-
-        return sb;
-    }
-
-    @NotNull
-    public static String getAbbreviatedRankString(@NotNull LeagueEntry leagueEntry) {
-        RankedTier tier = leagueEntry.getTier();
-        RankedDivision division = leagueEntry.getDivision();
-        int lp = leagueEntry.getPoints();
-
-        String sb = RankIcon.valueOf(tier).getEmoji() + " " +
-                tier.name().charAt(0) +
-                RomanNumerals.convertFrom(division.name()) + " " +
-                "(" + lp + " LP)";
-
-        return sb;
-    }
-
-    @NotNull
-    private static String convertToTitleCase(@NotNull String text) {
-        StringBuilder sb = new StringBuilder();
-
-        boolean convertNext = true;
-        for (char ch : text.toCharArray()) {
-            if (Character.isSpaceChar(ch)) {
-                convertNext = true;
-            } else if (convertNext) {
-                ch = Character.toTitleCase(ch);
-                convertNext = false;
-            } else {
-                ch = Character.toLowerCase(ch);
+            if (tier != null && division != null) {
+                return String.format(
+                        "%s %s (%d LP)",
+                        tier.toDisplayableString(),
+                        division.toDisplayableString(),
+                        leagueEntry.getPoints()
+                );
             }
-            sb.append(ch);
         }
+        return "Unranked";
+    }
 
-        return sb.toString();
+    public static @NotNull String getAbbreviatedRankString(@Nullable LeagueEntry leagueEntry) {
+        if (leagueEntry != null) {
+            RankedTier tier = leagueEntry.getTier();
+            RankedDivision division = leagueEntry.getDivision();
+
+            if (tier != null && division != null) {
+                return String.format(
+                        "%s %s%d (%d LP)",
+                        RankIcon.valueOf(tier).getEmoji(),
+                        tier.toDisplayableString().charAt(0),
+                        RomanNumerals.convertFrom(division.toDisplayableString()),
+                        leagueEntry.getPoints()
+                );
+            }
+        }
+        return String.format("%s N/A", RankIcon.UNRANKED.getEmoji());
     }
 }

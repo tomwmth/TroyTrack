@@ -4,7 +4,7 @@ import com.google.common.reflect.ClassPath;
 import dev.tomwmth.troytrack.command.base.Command;
 import dev.tomwmth.troytrack.command.base.CommandRegistry;
 import dev.tomwmth.troytrack.listener.base.EventListener;
-import dev.tomwmth.troytrack.riot.RiotApi;
+import dev.tomwmth.troytrack.tracker.TrackerHandler;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -37,7 +37,7 @@ public class TroyTrack {
     private final List<EventListener> registeredListeners = new ArrayList<>();
 
     @Getter
-    private final RiotApi riotApi;
+    private final TrackerHandler trackerHandler;
 
     public TroyTrack() {
         this.jda = JDABuilder
@@ -50,7 +50,7 @@ public class TroyTrack {
 
         this.commandRegistry = this.registerCommands();
 
-        this.riotApi = new RiotApi();
+        this.trackerHandler = new TrackerHandler();
 
         instance = this;
     }

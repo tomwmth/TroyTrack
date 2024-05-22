@@ -8,7 +8,7 @@ import lombok.Getter;
  * Created on 15/09/2023
  */
 public enum RankIcon {
-    UNRANKED(null, 0L),
+    UNRANKED(null, 1213524308618645574L),
     IRON(RankedTier.IRON, 1152005327370322020L),
     BRONZE(RankedTier.BRONZE, 1152005297372680213L),
     SILVER(RankedTier.SILVER, 1152005341899391136L),

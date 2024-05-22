@@ -1,4 +1,4 @@
-package dev.tomwmth.troytrack.riot.score;
+package dev.tomwmth.troytrack.tracker.score;
 
 import dev.tomwmth.viego.lol.match.v5.obj.Match;
 import dev.tomwmth.viego.lol.match.v5.obj.Participant;

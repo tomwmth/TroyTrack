@@ -1,4 +1,4 @@
-package dev.tomwmth.troytrack.riot;
+package dev.tomwmth.troytrack.tracker;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

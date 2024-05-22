@@ -2,7 +2,7 @@ package dev.tomwmth.troytrack;
 
 import dev.tomwmth.troytrack.obj.CachedGuildChannel;
 import dev.tomwmth.troytrack.obj.TrackedAccount;
-import dev.tomwmth.troytrack.riot.RiotId;
+import dev.tomwmth.troytrack.tracker.RiotId;
 import dev.tomwmth.viego.internal.RiotGame;
 import dev.tomwmth.viego.routing.Platform;
 import lombok.Getter;

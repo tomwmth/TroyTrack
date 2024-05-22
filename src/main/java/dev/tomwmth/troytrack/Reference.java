@@ -2,7 +2,7 @@ package dev.tomwmth.troytrack;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.tomwmth.troytrack.riot.RiotId;
+import dev.tomwmth.troytrack.tracker.RiotId;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
