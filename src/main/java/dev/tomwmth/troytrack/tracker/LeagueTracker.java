@@ -46,7 +46,7 @@ public final class LeagueTracker extends AccountTracker {
 
         RiotAccount account = this.api.getRiotAccountById(this.trackedAccount.getRiotId());
         Summoner summoner = this.api.getLolApi().getSummonerByRiotAccount(account);
-        this.latestEntry = this.api.getLolApi().getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_DUO);
+        this.latestEntry = this.api.getLolApi().getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_DUO, this.trackedAccount.getPlatform());
         this.latestMatch = this.api.getLolApi().getLatestMatch(account, this.trackedAccount.getPlatform());
     }
 
@@ -59,7 +59,7 @@ public final class LeagueTracker extends AccountTracker {
 
         if (otherMatch != null) {
             Summoner summoner = this.api.getLolApi().getSummonerByRiotAccount(account);
-            LeagueEntry otherEntry = this.api.getLolApi().getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_DUO);
+            LeagueEntry otherEntry = this.api.getLolApi().getLeagueEntry(summoner, RankedQueue.RANKED_SOLO_DUO, this.trackedAccount.getPlatform());
             if (this.latestMatch == null || !otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
                 boolean remake = (otherMatch.getInfo().getDuration() / 60.0F) <= 3.5F;
                 if (!remake) {

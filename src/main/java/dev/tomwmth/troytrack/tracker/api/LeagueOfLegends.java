@@ -46,8 +46,8 @@ public final class LeagueOfLegends {
         return this.summonerCache.get(account);
     }
 
-    public @Nullable LeagueEntry getLeagueEntry(@NotNull Summoner summoner, @NotNull RankedQueue queue) throws IllegalStateException {
-        var res = LeagueV4.getEntriesBySummonerId(summoner.getSummonerId(), Platform.OC1);
+    public @Nullable LeagueEntry getLeagueEntry(@NotNull Summoner summoner, @NotNull RankedQueue queue, @NotNull Platform platform) throws IllegalStateException {
+        var res = LeagueV4.getEntriesBySummonerId(summoner.getSummonerId(), platform);
         if (res.isPresent()) {
             List<LeagueEntry> entries = res.getValue();
             Optional<LeagueEntry> filtered = entries.stream().filter(e -> e.getQueueType() == queue).findFirst();

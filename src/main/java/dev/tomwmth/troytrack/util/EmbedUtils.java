@@ -15,6 +15,7 @@ import java.awt.*;
 public final class EmbedUtils {
     public static final Color NEUTRAL_COLOR = new Color(0x5326E6);
     public static final Color SUCCESS_COLOR = new Color(0x26E65C);
+    public static final Color SPECIAL_COLOR = new Color(0xFFFFC400);
     public static final Color ERROR_COLOR = new Color(0xf42c2c);
     private static final String FOOTER = "";
 
