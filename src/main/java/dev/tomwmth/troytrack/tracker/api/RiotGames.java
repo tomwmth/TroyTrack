@@ -53,7 +53,7 @@ public final class RiotGames {
         Viego.setApiCredentials(
                 ApiCredentials.builder()
                         .leagueOfLegends(System.getProperty("riot.lol.token"))
-//                        .teamfightTactics(System.getProperty("riot.tft.token"))
+                        .teamfightTactics(System.getProperty("riot.tft.token"))
                         .build()
         );
     }
