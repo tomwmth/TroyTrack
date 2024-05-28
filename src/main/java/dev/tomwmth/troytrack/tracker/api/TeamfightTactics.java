@@ -3,6 +3,7 @@ package dev.tomwmth.troytrack.tracker.api;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import dev.tomwmth.troytrack.util.object.Pair;
 import dev.tomwmth.viego.riot.account.v1.obj.RiotAccount;
 import dev.tomwmth.viego.routing.Platform;
 import dev.tomwmth.viego.tft.constants.GameQueue;
@@ -30,19 +31,19 @@ public final class TeamfightTactics {
     private static final MatchV1.Query LATEST_MATCHES_QUERY = new MatchV1.Query()
             .withMaxCount(10);
 
-    private final LoadingCache<RiotAccount, Summoner> summonerCache = CacheBuilder.newBuilder()
+    private final LoadingCache<Pair<RiotAccount, Platform>, Summoner> summonerCache = CacheBuilder.newBuilder()
             .maximumSize(20)
             .expireAfterWrite(Duration.of(5L, ChronoUnit.MINUTES))
             .concurrencyLevel(1)
             .build(new CacheLoader<>() {
                 @Override
-                public @NotNull Summoner load(@NotNull RiotAccount key) {
-                    return SummonerV1.getSummonerByPuuid(key.getPuuid(), Platform.OC1).getValue();
+                public @NotNull Summoner load(@NotNull Pair<RiotAccount, Platform> pair) {
+                    return SummonerV1.getSummonerByPuuid(pair.getFirst().getPuuid(), pair.getSecond()).getValue();
                 }
             });
 
-    public @NotNull Summoner getSummonerByRiotAccount(@NotNull RiotAccount account) throws ExecutionException {
-        return this.summonerCache.get(account);
+    public @NotNull Summoner getSummonerByRiotAccount(@NotNull RiotAccount account, @NotNull Platform platform) throws ExecutionException {
+        return this.summonerCache.get(Pair.of(account, platform));
     }
 
     public @Nullable LeagueEntry getLeagueEntry(@NotNull Summoner summoner, @NotNull RankedQueue queue, @NotNull Platform platform) throws IllegalStateException {

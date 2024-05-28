@@ -41,7 +41,7 @@ public final class TftTracker extends AccountTracker {
         super(trackedAccount);
 
         RiotAccount account = this.api.getRiotAccountById(this.trackedAccount.getRiotId());
-        Summoner summoner = this.api.getTftApi().getSummonerByRiotAccount(account);
+        Summoner summoner = this.api.getTftApi().getSummonerByRiotAccount(account, this.trackedAccount.getPlatform());
         this.latestEntry = this.api.getTftApi().getLeagueEntry(summoner, RankedQueue.RANKED_STANDARD, this.trackedAccount.getPlatform());
         this.latestMatch = this.api.getTftApi().getLatestMatch(account, this.trackedAccount.getPlatform());
     }
@@ -54,7 +54,7 @@ public final class TftTracker extends AccountTracker {
         Match otherMatch = this.api.getTftApi().getLatestMatch(account, this.trackedAccount.getPlatform());
 
         if (otherMatch != null) {
-            Summoner summoner = this.api.getTftApi().getSummonerByRiotAccount(account);
+            Summoner summoner = this.api.getTftApi().getSummonerByRiotAccount(account, this.trackedAccount.getPlatform());
             LeagueEntry otherEntry = this.api.getTftApi().getLeagueEntry(summoner, RankedQueue.RANKED_STANDARD, this.trackedAccount.getPlatform());
             if (this.latestMatch == null || !otherMatch.getMetadata().getId().equals(this.latestMatch.getMetadata().getId())) {
                 this.processNewMatch(summoner, otherMatch, otherEntry);
