@@ -69,10 +69,10 @@ public final class LeagueTracker extends AccountTracker {
                 else {
                     message = "ignored likely remake";
                 }
-            }
 
-            this.latestMatch = otherMatch;
-            this.latestEntry = otherEntry;
+                this.latestMatch = otherMatch;
+                this.latestEntry = otherEntry;
+            }
         }
 
         if (message == null) {
