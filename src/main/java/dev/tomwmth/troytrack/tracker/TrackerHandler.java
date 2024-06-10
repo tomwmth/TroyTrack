@@ -19,7 +19,7 @@ public final class TrackerHandler {
     @Getter
     private final Set<AccountTracker> trackers = new HashSet<>();
 
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
     public TrackerHandler() {
         var trackedAccounts = Config.getSettings().getTrackedAccounts();
